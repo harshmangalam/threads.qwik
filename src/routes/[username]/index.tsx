@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import InstagramIcon from "~/assets/icons/instagram.svg?jsx";
+import { MoreDropdown } from "./more-dropdown";
 export default component$(() => {
   return (
     <div>
@@ -43,10 +44,11 @@ export default component$(() => {
             <div>·</div>
             <div>harshmangalam.dev</div>
           </div>
-          <div>
-            <a href="/" class="btn btn-circle btn-ghost btn-sm">
-              <InstagramIcon class="h-5 w-5 fill-current" />
+          <div class="flex items-center">
+            <a href="/" class="btn btn-circle btn-ghost">
+              <InstagramIcon class="h-6 w-6 fill-current" />
             </a>
+            <MoreDropdown />
           </div>
         </div>
       </section>
