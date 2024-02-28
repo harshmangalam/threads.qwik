@@ -1,11 +1,11 @@
 import { component$ } from "@builder.io/qwik";
-import HomeOutlineIcon from "~/components/icons/home-outline.svg?jsx";
-import HomeIcon from "~/components/icons/home.svg?jsx";
-import SearchOutlineIcon from "~/components/icons/search-outline.svg?jsx";
-import SearchIcon from "~/components/icons/search-outline.svg?jsx";
-import CreateIcon from "~/components/icons/create.svg?jsx";
-import NotificationOutlineIcon from "~/components/icons/notification-outline.svg?jsx";
-import NotificationIcon from "~/components/icons/notification.svg?jsx";
+import HomeOutlineIcon from "~/assets/icons/home-outline.svg?jsx";
+import HomeIcon from "~/assets/icons/home.svg?jsx";
+import SearchOutlineIcon from "~/assets/icons/search-outline.svg?jsx";
+import SearchIcon from "~/assets/icons/search-outline.svg?jsx";
+import CreateIcon from "~/assets/icons/create.svg?jsx";
+import NotificationOutlineIcon from "~/assets/icons/notification-outline.svg?jsx";
+import NotificationIcon from "~/assets/icons/notification.svg?jsx";
 import { NavLink } from "./nav-link";
 
 export const NavLinks = component$(() => {
@@ -19,7 +19,7 @@ export const NavLinks = component$(() => {
         <SearchOutlineIcon q:slot="icon" class="h-7 w-7 opacity-40" />
         <SearchIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
-      <button class="hover:bg-base-200 bg-base-100 mx-0.5 my-1 rounded-lg px-8 py-5">
+      <button class="mx-0.5 my-1 rounded-lg bg-base-100 px-8 py-5 hover:bg-base-200">
         <CreateIcon class="h-7 w-7 opacity-40" />
       </button>
       <NavLink href="/activity/">
