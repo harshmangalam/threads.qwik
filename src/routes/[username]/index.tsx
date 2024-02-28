@@ -52,6 +52,13 @@ export default component$(() => {
           </div>
         </div>
       </section>
+
+      <section class="py-3">
+        <div class="grid grid-cols-2 gap-3">
+          <button class="btn btn-neutral btn-sm">Follow</button>
+          <button class="btn btn-sm">Mention</button>
+        </div>
+      </section>
     </div>
   );
 });
