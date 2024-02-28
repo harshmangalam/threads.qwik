@@ -4,6 +4,8 @@ import HomeIcon from "~/components/icons/home.svg?jsx";
 import SearchOutlineIcon from "~/components/icons/search-outline.svg?jsx";
 import SearchIcon from "~/components/icons/search-outline.svg?jsx";
 import CreateIcon from "~/components/icons/create.svg?jsx";
+import NotificationOutlineIcon from "~/components/icons/notification-outline.svg?jsx";
+import NotificationIcon from "~/components/icons/notification.svg?jsx";
 import { NavLink } from "./nav-link";
 
 export const NavLinks = component$(() => {
@@ -20,6 +22,10 @@ export const NavLinks = component$(() => {
       <button class="hover:bg-base-200 bg-base-100 mx-0.5 my-1 rounded-lg px-8 py-5">
         <CreateIcon class="h-7 w-7 opacity-40" />
       </button>
+      <NavLink href="/activity/">
+        <NotificationOutlineIcon q:slot="icon" class="h-7 w-7 opacity-40" />
+        <NotificationIcon q:slot="activeIcon" class="h-7 w-7" />
+      </NavLink>
     </div>
   );
 });
