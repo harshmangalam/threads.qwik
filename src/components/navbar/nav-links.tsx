@@ -6,6 +6,7 @@ import SearchIcon from "~/assets/icons/search-outline.svg?jsx";
 import CreateIcon from "~/assets/icons/create.svg?jsx";
 import NotificationOutlineIcon from "~/assets/icons/notification-outline.svg?jsx";
 import NotificationIcon from "~/assets/icons/notification.svg?jsx";
+import ProfileIcon from "~/assets/icons/profile.svg?jsx";
 import { NavLink } from "./nav-link";
 
 export const NavLinks = component$(() => {
@@ -25,6 +26,10 @@ export const NavLinks = component$(() => {
       <NavLink href="/activity/">
         <NotificationOutlineIcon q:slot="icon" class="h-7 w-7 opacity-40" />
         <NotificationIcon q:slot="activeIcon" class="h-7 w-7" />
+      </NavLink>
+      <NavLink href={`/@harshmangalam/`}>
+        <ProfileIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
+        <ProfileIcon q:slot="activeIcon" class="h-7 w-7 fill-current" />
       </NavLink>
     </div>
   );
