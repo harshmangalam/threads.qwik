@@ -17,7 +17,7 @@ export default component$(() => {
   return (
     <div>
       <Navbar />
-      <main class="mx-auto max-w-[620px]">
+      <main class="mx-auto max-w-[620px] px-6">
         <Slot />
       </main>
     </div>
