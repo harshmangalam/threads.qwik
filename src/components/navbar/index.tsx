@@ -1,8 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Logo } from "../logo";
-import { NavLink } from "./nav-link";
-import HomeOutlineIcon from "~/components/icons/home-outline.svg?jsx";
-import HomeIcon from "~/components/icons/home.svg?jsx";
+import { NavLinks } from "./nav-links";
+
 export const Navbar = component$(() => {
   return (
     <header class="">
@@ -13,10 +12,7 @@ export const Navbar = component$(() => {
           </section>
 
           <section class=" col-span-6 flex items-center">
-            <NavLink href="/">
-              <HomeOutlineIcon q:slot="icon" class="h-7 w-7 opacity-40" />
-              <HomeIcon q:slot="activeIcon" class="h-7 w-7 " />
-            </NavLink>
+            <NavLinks />
           </section>
 
           <section class=" col-span-3"></section>

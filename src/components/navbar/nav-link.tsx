@@ -1,24 +1,18 @@
 import { Slot, component$ } from "@builder.io/qwik";
-import { Link, useLocation } from "@builder.io/qwik-city";
+import { Link, type LinkProps } from "@builder.io/qwik-city";
+import { useActiveRoute } from "~/hooks/use-active-route";
+type NavLinkProps = LinkProps & { activeClass?: string };
 
-type NavLinkProps = {
-  href: string;
-};
-export const NavLink = component$((props: NavLinkProps) => {
-  const { href } = props;
-
-  const locationSig = useLocation();
+export const NavLink = component$(({ href, ...props }: NavLinkProps) => {
+  const isActive = useActiveRoute(href);
 
   return (
     <Link
+      {...props}
       href={href}
-      class="hover:bg-base-200 bg-base-100 mx-0.5 my-1 rounded-lg px-8 py-5"
+      class={`hover:bg-base-200 bg-base-100 mx-0.5 my-1 rounded-lg px-8 py-5`}
     >
-      {locationSig.url.pathname.includes(href) ? (
-        <Slot name="activeIcon" />
-      ) : (
-        <Slot name="icon" />
-      )}
+      {isActive ? <Slot name="activeIcon" /> : <Slot name="icon" />}
     </Link>
   );
 });
