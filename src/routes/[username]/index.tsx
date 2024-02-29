@@ -1,6 +1,8 @@
 import { component$ } from "@builder.io/qwik";
 import InstagramIcon from "~/assets/icons/instagram.svg?jsx";
 import { MoreDropdown } from "./more-dropdown";
+import { ProfileTabs } from "./profile-tabs";
+
 export default component$(() => {
   return (
     <div>
@@ -59,6 +61,8 @@ export default component$(() => {
           <button class="btn btn-sm">Mention</button>
         </div>
       </section>
+
+      <ProfileTabs />
     </div>
   );
 });
