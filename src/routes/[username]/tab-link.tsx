@@ -1,20 +1,17 @@
 import { Slot, component$ } from "@builder.io/qwik";
-import { Link, type LinkProps } from "@builder.io/qwik-city";
-import { useActiveRoute } from "~/hooks/use-active-route";
-type NavLinkProps = LinkProps & { activeClass?: string };
+import { Link, useLocation, type LinkProps } from "@builder.io/qwik-city";
+
+type NavLinkProps = LinkProps;
 
 export const TabLink = component$(({ href, ...props }: NavLinkProps) => {
-  const isActive = useActiveRoute(href);
+  const location = useLocation();
 
   return (
     <Link
       role="tab"
       {...props}
       href={href}
-      class={[
-        "tab font-medium opacity-60 ",
-        { "tab-active opacity-100": isActive },
-      ]}
+      class={`tab ${location.url.pathname.endsWith(href!) ? "tab-active" : ""}`}
     >
       <Slot />
     </Link>

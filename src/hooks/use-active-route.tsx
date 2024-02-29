@@ -13,6 +13,7 @@ export const useActiveRoute = (href?: string) => {
     toPathname !== "/" && toPathname.endsWith("/")
       ? toPathname.length - 1
       : toPathname.length;
+
   const isActive =
     locationPathname === toPathname ||
     (locationPathname.endsWith(toPathname) &&
