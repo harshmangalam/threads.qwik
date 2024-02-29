@@ -2,7 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import HomeIcon from "~/assets/icons/home.svg?jsx";
 import SearchIcon from "~/assets/icons/search.svg?jsx";
 import CreateIcon from "~/assets/icons/create.svg?jsx";
-import NotificationIcon from "~/assets/icons/notification.svg?jsx";
+import NotificationIcon from "~/assets/icons/heart.svg?jsx";
 import ProfileIcon from "~/assets/icons/profile.svg?jsx";
 import { NavLink } from "./nav-link";
 
