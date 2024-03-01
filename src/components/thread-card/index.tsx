@@ -2,6 +2,8 @@ import { component$ } from "@builder.io/qwik";
 import { ActionsDropdown } from "./actions-dropdown";
 import { Like } from "./like";
 import { Reply } from "./reply";
+import { Repost } from "./repost";
+import { Share } from "./share";
 
 export const ThreadCard = component$(() => {
   return (
@@ -45,6 +47,8 @@ export const ThreadCard = component$(() => {
           <div class="mt-4 flex items-center gap-2">
             <Like />
             <Reply />
+            <Repost />
+            <Share />
           </div>
         </div>
       </header>
