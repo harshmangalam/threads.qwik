@@ -4,6 +4,7 @@ import { Like } from "./like";
 import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
+import { ThreadLikes } from "./thread-likes";
 
 export const ThreadCard = component$(() => {
   return (
@@ -49,6 +50,9 @@ export const ThreadCard = component$(() => {
             <Reply />
             <Repost />
             <Share />
+          </div>
+          <div class="mt-2">
+            <ThreadLikes />
           </div>
         </div>
       </header>
