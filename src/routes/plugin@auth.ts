@@ -14,6 +14,13 @@ export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
       GitHub({
         clientId: env.get("GITHUB_ID")!,
         clientSecret: env.get("GITHUB_SECRET")!,
+        profile: (p) => ({
+          id: p.id.toString(),
+          username: p.login,
+          email: p.email,
+          image: p.avatar_url,
+          name: p.name,
+        }),
       }),
     ] as Provider[],
   }));
