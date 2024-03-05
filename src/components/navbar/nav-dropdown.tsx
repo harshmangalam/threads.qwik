@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import MoreIcon from "~/assets/icons/more.svg?jsx";
+import { Logout } from "./logout";
 
 const NavLink = component$(
   ({ href, label }: { href: string; label: string }) => (
@@ -29,7 +30,9 @@ export const NavDropdown = component$(() => {
         <div class="divider m-0"></div>
         <NavLink href="/" label="Your likes" />
         <div class="divider m-0"></div>
-        <NavLink href="/" label="Logout" />
+        <li>
+          <Logout />
+        </li>
       </ul>
     </div>
   );
