@@ -46,5 +46,9 @@
     "undici": "*",
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.2.1"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^1.5.0",
+    "@prisma/client": "^5.10.2"
   }
 }
