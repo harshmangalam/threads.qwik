@@ -1,7 +1,15 @@
 import { component$ } from "@builder.io/qwik";
 import { useAuthSignin } from "../plugin@auth";
-import { Form } from "@builder.io/qwik-city";
+import { Form, type RequestHandler } from "@builder.io/qwik-city";
+import { type Session } from "@auth/core/types";
 
+export const onRequest: RequestHandler = async (event) => {
+  const session: Session | null = event.sharedMap.get("session");
+  if (session && new Date(session.expires) > new Date()) {
+    throw event.redirect(302, `/`);
+  }
+  await event.next();
+};
 export default component$(() => {
   const signIn = useAuthSignin();
   return (
