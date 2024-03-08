@@ -5,6 +5,7 @@ import CreateIcon from "~/assets/icons/create.svg?jsx";
 import NotificationIcon from "~/assets/icons/heart.svg?jsx";
 import ProfileIcon from "~/assets/icons/profile.svg?jsx";
 import { NavLink } from "./nav-link";
+import { CreateThread } from "../create-thread";
 
 export const NavLinks = component$(() => {
   return (
@@ -17,9 +18,11 @@ export const NavLinks = component$(() => {
         <SearchIcon q:slot="icon" class="h-7 w-7 opacity-40" />
         <SearchIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
-      <button class="mx-0.5 my-1 rounded-lg bg-base-100 px-8 py-5 hover:bg-base-200">
-        <CreateIcon class="h-7 w-7 opacity-40" />
-      </button>
+      <CreateThread>
+        <button class="mx-0.5 my-1 rounded-lg bg-base-100 px-8 py-5 hover:bg-base-200">
+          <CreateIcon class="h-7 w-7 opacity-40" />
+        </button>
+      </CreateThread>
       <NavLink href="/activity/">
         <NotificationIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <NotificationIcon q:slot="activeIcon" class="h-7 w-7" />
