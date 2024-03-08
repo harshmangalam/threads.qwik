@@ -57,6 +57,7 @@ model User {
   bio           String     @default("") @db.VarChar(255)
   accounts      Account[]
   sessions      Session[]
+  threads       Thread[]
 }
 
 model VerificationToken {
@@ -65,4 +66,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Thread {
+  id        String   @id @default(cuid())
+  text      String?  @db.VarChar(500)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
