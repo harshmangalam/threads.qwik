@@ -8,15 +8,18 @@ export const ReplyDropdown = component$(() => {
     },
     {
       label: "Profiles you follow",
-      value: "PROFILES_FOLLOW",
+      value: "FOLLOWING",
     },
     {
       label: "Mentioned only",
-      value: "MENTIONED_ONLY",
+      value: "MENTION",
     },
   ];
   return (
-    <select class="select select-bordered select-sm w-full max-w-xs">
+    <select
+      name="replyPrivacy"
+      class="select select-bordered select-sm w-full max-w-xs"
+    >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {`${o.label} can reply`}
