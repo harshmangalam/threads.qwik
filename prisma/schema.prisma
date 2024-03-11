@@ -68,11 +68,18 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+enum ReplyPrivacyType {
+  ANYONE
+  FOLLOWING
+  MENTION
+}
+
 model Thread {
-  id        String   @id @default(cuid())
-  text      String?  @db.VarChar(500)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String           @id @default(cuid())
+  text         String?          @db.VarChar(500)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  replyPrivacy ReplyPrivacyType @default(ANYONE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
