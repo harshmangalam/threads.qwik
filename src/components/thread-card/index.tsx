@@ -5,8 +5,16 @@ import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
 import { ThreadLikes } from "./thread-likes";
+import { type Thread } from "@prisma/client";
 
-export const ThreadCard = component$(() => {
+type ThreadCardProps = {
+  thread: Thread & {
+    user: {
+      username: string;
+    };
+  };
+};
+export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
   return (
     <article>
       <header class="flex gap-3">
@@ -23,19 +31,15 @@ export const ThreadCard = component$(() => {
         </div>
         <div class="flex flex-1 flex-col">
           <div class="flex items-center justify-between">
-            <h3 class="font-medium">harshmangalam_</h3>
+            <h3 class="font-medium">{thread.user.username}</h3>
             <div class="flex items-center gap-3">
-              <div class="opacity-50">1 w</div>
+              <div class="opacity-50">{thread.createdAt.toDateString()}</div>
               <ActionsDropdown />
             </div>
           </div>
-          <p class="text-sm">
-            Ok so I’m telling you all before I post on ~the other app~ tomorrow
-            but I rearranged my whole desk setup so that I’m facing the window
-            and not the wall and I kinda love it 😍
-          </p>
+          <p class="text-sm">{thread.text}</p>
 
-          <picture class="mt-4">
+          {/* <picture class="mt-4">
             <img
               src="https://plus.unsplash.com/premium_photo-1705091981811-d75606c22ab8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8"
               alt="mewtru"
@@ -43,7 +47,7 @@ export const ThreadCard = component$(() => {
               height={400}
               class="aspect-square rounded-lg"
             />
-          </picture>
+          </picture> */}
 
           <div class="mt-4 flex items-center gap-2">
             <Like />
