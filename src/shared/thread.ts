@@ -12,11 +12,7 @@ export const useCreateThread = routeAction$(
     await prisma.thread.create({
       data: {
         ...form,
-        user: {
-          connect: {
-            email: session.user?.email,
-          },
-        },
+        userId: session.user.id,
       },
     });
 
@@ -24,6 +20,6 @@ export const useCreateThread = routeAction$(
   },
   zod$((z) => ({
     text: z.string(),
-    replyPrivacy: z.string(),
+    replyPrivacy: z.enum(["ANYONE", "FOLLOWING", "MENTION"]),
   })),
 );

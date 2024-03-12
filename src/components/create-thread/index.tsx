@@ -11,7 +11,13 @@ export const CreateThread = component$(() => {
         <Slot />
       </div>
       <dialog ref={modal} class="modal">
-        <Form action={createThread} class="modal-box">
+        <Form
+          action={createThread}
+          class="modal-box"
+          onSubmitCompleted$={() => {
+            modal.value?.close();
+          }}
+        >
           <div class="flex gap-3">
             <div class="avatar">
               <div class="h-9 w-9 rounded-full">
