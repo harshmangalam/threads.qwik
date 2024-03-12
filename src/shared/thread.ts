@@ -23,3 +23,20 @@ export const useCreateThread = routeAction$(
     replyPrivacy: z.enum(["ANYONE", "FOLLOWING", "MENTION"]),
   })),
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useDeleteThread = routeAction$(
+  async ({ threadId }, { redirect, url }) => {
+    console.log(url.href);
+    await prisma.thread.delete({
+      where: {
+        id: threadId,
+      },
+    });
+
+    throw redirect(302, url.href);
+  },
+  zod$((z) => ({
+    threadId: z.string(),
+  })),
+);
