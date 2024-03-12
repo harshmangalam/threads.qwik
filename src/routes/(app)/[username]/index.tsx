@@ -4,7 +4,6 @@ import { ThreadCard } from "~/components/thread-card";
 import { prisma } from "~/utils/prisma";
 
 export const useGetProfileThreds = routeLoader$(async ({ params }) => {
-  console.log(params);
   const threads = await prisma.thread.findMany({
     where: {
       user: {

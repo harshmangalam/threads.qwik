@@ -5,6 +5,12 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "~/utils/prisma";
 import type { User } from "@prisma/client";
 
+declare module "@auth/core/types" {
+  interface Session {
+    user: User & { username: string };
+  }
+}
+
 declare module "@auth/core/adapters" {
   interface AdapterUser extends User {}
 }
@@ -28,4 +34,16 @@ export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
         }),
       }),
     ] as Provider[],
+
+    callbacks: {
+      session: async (opts) => {
+        const { session, user } = opts;
+        return {
+          ...session,
+          user: {
+            ...user,
+          },
+        };
+      },
+    },
   }));

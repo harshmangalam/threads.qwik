@@ -6,8 +6,10 @@ import NotificationIcon from "~/assets/icons/heart.svg?jsx";
 import ProfileIcon from "~/assets/icons/profile.svg?jsx";
 import { NavLink } from "./nav-link";
 import { CreateThread } from "../create-thread";
+import { useAuthSession } from "~/routes/plugin@auth";
 
 export const NavLinks = component$(() => {
+  const session = useAuthSession();
   return (
     <div class="flex items-center">
       <NavLink href="/">
@@ -27,7 +29,7 @@ export const NavLinks = component$(() => {
         <NotificationIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <NotificationIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
-      <NavLink href={`/@harshmangalam/`}>
+      <NavLink href={`/@${session.value?.user.username}/`}>
         <ProfileIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <ProfileIcon q:slot="activeIcon" class="h-7 w-7 fill-current" />
       </NavLink>
