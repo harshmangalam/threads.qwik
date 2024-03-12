@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoleType {
+  USER
+  ADMIN
+}
+
 enum StatusType {
   ONLINE
   OFFLINE
@@ -55,6 +60,7 @@ model User {
   username      String     @unique @db.VarChar(39)
   status        StatusType @default(ONLINE)
   bio           String     @default("") @db.VarChar(255)
+  role          RoleType   @default(USER)
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]

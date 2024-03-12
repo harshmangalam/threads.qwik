@@ -3,6 +3,11 @@ import GitHub from "@auth/core/providers/github";
 import type { Provider } from "@auth/core/providers";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "~/utils/prisma";
+import type { User } from "@prisma/client";
+
+declare module "@auth/core/adapters" {
+  interface AdapterUser extends User {}
+}
 
 export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
   serverAuth$(({ env }) => ({
