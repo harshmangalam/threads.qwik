@@ -6,6 +6,7 @@ import { Repost } from "./repost";
 import { Share } from "./share";
 import { ThreadLikes } from "./thread-likes";
 import { type Thread } from "@prisma/client";
+import { formatDistanceToNow } from "date-fns";
 
 type ThreadCardProps = {
   thread: Thread & {
@@ -33,7 +34,9 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
           <div class="flex items-center justify-between">
             <h3 class="font-medium">{thread.user.username}</h3>
             <div class="flex items-center gap-3">
-              <div class="opacity-50">{thread.createdAt.toDateString()}</div>
+              <div class="text-sm opacity-50">
+                {formatDistanceToNow(thread.createdAt)}
+              </div>
               <ActionsDropdown />
             </div>
           </div>

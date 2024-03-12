@@ -11,6 +11,9 @@ dependencies:
   '@prisma/client':
     specifier: ^5.10.2
     version: 5.10.2(prisma@5.10.2)
+  date-fns:
+    specifier: ^3.4.0
+    version: 3.4.0
 
 devDependencies:
   '@auth/core':
@@ -1522,6 +1525,10 @@ packages:
     transitivePeerDependencies:
       - postcss
     dev: true
+
+  /date-fns@3.4.0:
+    resolution: {integrity: sha512-Akz4R8J9MXBsOgF1QeWeCsbv6pntT5KCPjU0Q9prBxVmWJYPLhwAIsNg3b0QAdr0ttiozYLD3L/af7Ra0jqYXw==}
+    dev: false
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
