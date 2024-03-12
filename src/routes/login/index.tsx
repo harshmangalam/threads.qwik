@@ -3,12 +3,16 @@ import { useAuthSignin } from "../plugin@auth";
 import { Form, type RequestHandler } from "@builder.io/qwik-city";
 import { type Session } from "@auth/core/types";
 
-export const onRequest: RequestHandler = async (event) => {
-  const session: Session | null = event.sharedMap.get("session");
+export const onRequest: RequestHandler = async ({
+  next,
+  sharedMap,
+  redirect,
+}) => {
+  const session: Session | null = sharedMap.get("session");
   if (session && new Date(session.expires) > new Date()) {
-    throw event.redirect(302, `/`);
+    throw redirect(302, `/`);
   }
-  await event.next();
+  await next();
 };
 export default component$(() => {
   const signIn = useAuthSignin();
