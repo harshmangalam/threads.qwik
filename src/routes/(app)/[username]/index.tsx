@@ -1,4 +1,3 @@
-import type { Session } from "@auth/core/types";
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { ThreadCard } from "~/components/thread-card";
