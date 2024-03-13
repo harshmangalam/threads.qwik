@@ -4,7 +4,7 @@ import { prisma } from "~/utils/prisma";
 
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
-  async (form, { sharedMap, redirect }) => {
+  async (form, { sharedMap, redirect, url }) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, `/login`);
@@ -16,7 +16,7 @@ export const useCreateThread = routeAction$(
       },
     });
 
-    throw redirect(302, `/`);
+    throw redirect(302, url.href);
   },
   zod$((z) => ({
     text: z.string(),
