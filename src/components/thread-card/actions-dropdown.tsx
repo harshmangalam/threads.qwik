@@ -1,8 +1,7 @@
-import { $, component$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import MenuIcon from "~/assets/icons/menu-horiz.svg?jsx";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { useDeleteThread } from "~/shared/thread";
-import { DeleteModal } from "../delete-modal";
 
 export const ActionsDropdown = component$(
   ({ userId, threadId }: { userId: string; threadId: string }) => {
@@ -28,15 +27,12 @@ export const ActionsDropdown = component$(
           </li>
           <li>
             {session.value?.user.id === userId ? (
-              <DeleteModal
-                title="Delete post?"
-                description={`If you delete this post you will not be able to restore it.`}
-                onDelete={$(() => deleteThread.submit({ threadId }))}
+              <button
+                onClick$={() => deleteThread.submit({ threadId })}
+                class="flex justify-start font-medium text-error"
               >
-                <button class="flex justify-start font-medium text-error">
-                  Delete
-                </button>
-              </DeleteModal>
+                Delete
+              </button>
             ) : (
               <button class="font-medium text-error">Unfollow</button>
             )}
