@@ -2,11 +2,21 @@ import { component$ } from "@builder.io/qwik";
 import MenuIcon from "~/assets/icons/menu-horiz.svg?jsx";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { useDeleteThread } from "~/shared/thread";
+import { EditReplyPrivacy } from "./edit-reply-privacy";
 
 export const ActionsDropdown = component$(
-  ({ userId, threadId }: { userId: string; threadId: string }) => {
+  ({
+    userId,
+    threadId,
+    replyPrivacy,
+  }: {
+    userId: string;
+    threadId: string;
+    replyPrivacy: string;
+  }) => {
     const session = useAuthSession();
     const deleteThread = useDeleteThread();
+    const isCurrentUser = session.value?.user.id === userId;
     return (
       <div class="dropdown dropdown-end">
         <div tabIndex={0} role="button" class="btn btn-circle btn-ghost btn-sm">
@@ -25,8 +35,11 @@ export const ActionsDropdown = component$(
           <li>
             <button>Mute</button>
           </li>
+          {isCurrentUser && (
+            <EditReplyPrivacy replyPrivacy={replyPrivacy} threadId={threadId} />
+          )}
           <li>
-            {session.value?.user.id === userId ? (
+            {isCurrentUser ? (
               <button
                 onClick$={() => deleteThread.submit({ threadId })}
                 class="flex justify-start font-medium text-error"

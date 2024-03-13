@@ -37,7 +37,11 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
               <div class="text-sm opacity-50">
                 {formatDistanceToNow(thread.createdAt)}
               </div>
-              <ActionsDropdown userId={thread.userId} threadId={thread.id} />
+              <ActionsDropdown
+                userId={thread.userId}
+                threadId={thread.id}
+                replyPrivacy={thread.replyPrivacy}
+              />
             </div>
           </div>
           <p class="text-sm">{thread.text}</p>

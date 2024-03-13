@@ -40,3 +40,21 @@ export const useDeleteThread = routeAction$(
     threadId: z.string(),
   })),
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useUpdateReplyPrivacy = routeAction$(
+  async ({ threadId, replyPrivacy }) => {
+    await prisma.thread.update({
+      where: {
+        id: threadId,
+      },
+      data: {
+        replyPrivacy,
+      },
+    });
+  },
+  zod$((z) => ({
+    threadId: z.string(),
+    replyPrivacy: z.enum(["ANYONE", "FOLLOWING", "MENTION"]),
+  })),
+);

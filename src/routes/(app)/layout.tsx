@@ -1,7 +1,11 @@
 import { component$, Slot } from "@builder.io/qwik";
 import { Navbar } from "~/components/navbar";
 
-export { useCreateThread, useDeleteThread } from "~/shared/thread";
+export {
+  useCreateThread,
+  useDeleteThread,
+  useUpdateReplyPrivacy,
+} from "~/shared/thread";
 export default component$(() => {
   return (
     <div>
