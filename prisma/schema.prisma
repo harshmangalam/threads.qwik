@@ -61,6 +61,8 @@ model User {
   status        StatusType @default(ONLINE)
   bio           String     @default("") @db.VarChar(255)
   role          RoleType   @default(USER)
+  private       Boolean    @default(false)
+  link          String?
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]
