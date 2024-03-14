@@ -7,7 +7,7 @@ export const useGetProfileThreds = routeLoader$(async ({ params }) => {
   const threads = await prisma.thread.findMany({
     where: {
       user: {
-        username: params.username.slice(1),
+        username: params.username,
       },
     },
     include: {

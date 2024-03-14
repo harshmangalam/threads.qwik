@@ -29,7 +29,7 @@ export const NavLinks = component$(() => {
         <NotificationIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <NotificationIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
-      <NavLink href={`/@${session.value?.user.username}/`}>
+      <NavLink href={`/${session.value?.user.username}/`}>
         <ProfileIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <ProfileIcon q:slot="activeIcon" class="h-7 w-7 fill-current" />
       </NavLink>
