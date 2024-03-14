@@ -12,6 +12,7 @@ type Props = QwikIntrinsicElements["input"] & {
     | "input-success"
     | "input-warning"
     | "input-error";
+  sizes?: "input-sm" | "input-md" | "input-lg";
 };
 
 export const TextInput = component$((props: Props) => {
@@ -21,6 +22,7 @@ export const TextInput = component$((props: Props) => {
     error,
     bordered = true,
     colorScheme = "",
+    sizes = "input-md",
     ...rest
   } = props;
   return (
@@ -32,7 +34,12 @@ export const TextInput = component$((props: Props) => {
       )}
       <input
         id={id}
-        class={["input w-full", { "input-bordered": bordered }, colorScheme]}
+        class={[
+          "input w-full",
+          { "input-bordered": bordered },
+          colorScheme,
+          sizes,
+        ]}
         {...rest}
       />
       {error && (
