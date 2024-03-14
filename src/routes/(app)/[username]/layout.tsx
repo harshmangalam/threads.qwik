@@ -1,11 +1,11 @@
 import { Slot, component$ } from "@builder.io/qwik";
-import InstagramIcon from "~/assets/icons/instagram.svg?jsx";
 import { MoreDropdown } from "./more-dropdown";
 import { ProfileTabs } from "./profile-tabs";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
 import { prisma } from "~/utils/prisma";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { EditProfileModal } from "./edit-profile-modal";
+import { GithubAccount } from "./github-account";
 
 export const useGetUser = routeLoader$(async ({ params, error }) => {
   const user = await prisma.user.findUnique({
@@ -19,6 +19,29 @@ export const useGetUser = routeLoader$(async ({ params, error }) => {
   }
   return user;
 });
+export const useUpdateUserProfile = routeAction$(
+  async ({ id, ...data }, { redirect, url }) => {
+    console.log(data.private);
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+        private: data.private === "on",
+      },
+    });
+
+    throw redirect(302, url.href);
+  },
+  zod$((z) => ({
+    id: z.string(),
+    name: z.string(),
+    bio: z.string(),
+    link: z.string(),
+    private: z.string(),
+  })),
+);
 export default component$(() => {
   const user = useGetUser();
   const session = useAuthSession();
@@ -58,12 +81,14 @@ export default component$(() => {
           <div class="flex items-center gap-2 text-sm opacity-60">
             <div>13K followers</div>
             <div>·</div>
-            {<div>harshmangalam.dev</div>}
+            {user.value.link && (
+              <a href={user.value.link} target="_blank">
+                {user.value.link}
+              </a>
+            )}
           </div>
           <div class="flex items-center">
-            <a href="/" class="btn btn-circle btn-ghost">
-              <InstagramIcon class="h-6 w-6 fill-current" />
-            </a>
+            <GithubAccount username={user.value.username} />
             {session.value?.user.id !== user.value.id && <MoreDropdown />}
           </div>
         </div>
@@ -71,7 +96,7 @@ export default component$(() => {
 
       <section class="py-3">
         {session.value?.user.id === user.value.id ? (
-          <EditProfileModal />
+          <EditProfileModal user={user.value} />
         ) : (
           <div class="grid grid-cols-2 gap-3">
             <button class="btn btn-neutral btn-sm">Follow</button>
