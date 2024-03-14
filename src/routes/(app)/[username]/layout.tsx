@@ -45,7 +45,6 @@ export const useUpdateUserProfile = routeAction$(
 export default component$(() => {
   const user = useGetUser();
   const session = useAuthSession();
-
   return (
     <div>
       {/* profile details section  */}
@@ -105,7 +104,7 @@ export default component$(() => {
         )}
       </section>
 
-      <ProfileTabs />
+      <ProfileTabs username={user.value.username} />
 
       <div class="py-4">
         <Slot />
