@@ -7,7 +7,7 @@ import { useAuthSession } from "~/routes/plugin@auth";
 import { EditProfileModal } from "./edit-profile-modal";
 import { GithubAccount } from "./github-account";
 import { ImagePreview } from "./image-preview";
-
+import PrivateIcon from "~/assets/icons/private.svg?jsx";
 export const useGetUser = routeLoader$(async ({ params, error }) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -59,6 +59,9 @@ export default component$(() => {
                 <div class="badge badge-ghost text-xs opacity-60">
                   threads.qwik
                 </div>
+                {user.value.private && (
+                  <PrivateIcon class="h-4 w-4 opacity-50" />
+                )}
               </div>
             </div>
           </div>
