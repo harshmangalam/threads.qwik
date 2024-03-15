@@ -6,6 +6,7 @@ import { prisma } from "~/utils/prisma";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { EditProfileModal } from "./edit-profile-modal";
 import { GithubAccount } from "./github-account";
+import { ImagePreview } from "./image-preview";
 
 export const useGetUser = routeLoader$(async ({ params, error }) => {
   const user = await prisma.user.findUnique({
@@ -64,11 +65,13 @@ export default component$(() => {
 
           <div class="flex-none">
             {user.value.image && (
-              <div class="avatar">
-                <div class="w-24 rounded-full">
-                  <img width={96} height={96} src={user.value.image} />
+              <ImagePreview src={user.value.image}>
+                <div class="avatar">
+                  <div class="w-24 rounded-full">
+                    <img width={96} height={96} src={user.value.image} />
+                  </div>
                 </div>
-              </div>
+              </ImagePreview>
             )}
           </div>
         </div>
