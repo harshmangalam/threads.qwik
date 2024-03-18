@@ -15,6 +15,7 @@ export const useGetProfileThreds = routeLoader$(async ({ params }) => {
         select: {
           id: true,
           username: true,
+          image: true,
         },
       },
     },

@@ -12,6 +12,8 @@ type ThreadCardProps = {
   thread: Thread & {
     user: {
       username: string;
+      id: string;
+      image?: string | null;
     };
   };
 };
@@ -20,15 +22,13 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
     <article>
       <header class="flex gap-3">
         <div class="mt-2 flex-none">
-          <div class="avatar">
-            <div class="w-9 rounded-full">
-              <img
-                width={36}
-                height={36}
-                src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
+          {thread.user.image && (
+            <div class="avatar">
+              <div class="w-9 rounded-full">
+                <img width={36} height={36} src={thread.user.image} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div class="flex flex-1 flex-col">
           <div class="flex items-center justify-between">
