@@ -19,6 +19,9 @@ export {
   useDeleteThread,
   useUpdateReplyPrivacy,
 } from "~/shared/thread";
+
+export { useFollowUser } from "~/shared/user";
+
 export default component$(() => {
   return (
     <div>
