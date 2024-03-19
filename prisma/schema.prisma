@@ -104,4 +104,5 @@ model Follows {
   followedAt   DateTime @default(now())
 
   @@id([followingId, followedById])
+  @@unique([followedById, followingId])
 }
