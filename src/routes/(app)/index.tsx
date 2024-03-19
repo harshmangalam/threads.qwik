@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { ThreadCard } from "~/components/thread-card";
-import { UserSuggestions } from "~/components/user-suggestions";
+import { UserSuggestions } from "~/components/user/user-suggestions";
 import { prisma } from "~/utils/prisma";
 
 export const useGetThreads = routeLoader$(async () => {
