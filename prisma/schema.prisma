@@ -24,6 +24,12 @@ enum StatusType {
   IDLE
 }
 
+enum ReplyPrivacyType {
+  ANYONE
+  FOLLOWING
+  MENTION
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -66,6 +72,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]
+  followedBy    Follows[]  @relation("followedBy")
+  following     Follows[]  @relation("following")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model VerificationToken {
@@ -76,12 +86,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum ReplyPrivacyType {
-  ANYONE
-  FOLLOWING
-  MENTION
-}
-
 model Thread {
   id           String           @id @default(cuid())
   text         String?          @db.VarChar(500)
@@ -90,4 +94,14 @@ model Thread {
   replyPrivacy ReplyPrivacyType @default(ANYONE)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+}
+
+model Follows {
+  followedBy   User     @relation("followedBy", fields: [followedById], references: [id])
+  followedById String
+  following    User     @relation("following", fields: [followingId], references: [id])
+  followingId  String
+  followedAt   DateTime @default(now())
+
+  @@id([followingId, followedById])
 }
