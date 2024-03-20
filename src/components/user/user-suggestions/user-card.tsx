@@ -1,11 +1,13 @@
 import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
-import type { User } from "@prisma/client";
 import { Button } from "~/components/ui/button";
-import { useFollowUser } from "~/shared/user";
+import { type UserSuggestionType, useFollowUser } from "~/shared/user";
 
 type UserCardProps = {
-  user: Pick<User, "id" | "name" | "image" | "username">;
+  user: Pick<
+    UserSuggestionType,
+    "id" | "name" | "image" | "username" | "isFollowing" | "shouldFollowBack"
+  >;
 };
 export const UserCard = component$(({ user }: UserCardProps) => {
   const followUser = useFollowUser();
@@ -28,11 +30,16 @@ export const UserCard = component$(({ user }: UserCardProps) => {
           <Button
             fullWidth
             size="btn-sm"
-            colorScheme="btn-neutral"
+            colorScheme={user.isFollowing ? "btn-ghost" : "btn-neutral"}
             loading={followUser.isRunning}
             type="submit"
+            outline={user.isFollowing}
           >
-            Follow
+            {user.isFollowing
+              ? "Unfollow"
+              : user.shouldFollowBack
+                ? "Follow back"
+                : "Follow"}
           </Button>
         </Form>
       </div>
