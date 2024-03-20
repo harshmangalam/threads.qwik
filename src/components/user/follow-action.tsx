@@ -15,6 +15,9 @@ export const FollowAction = component$(
       <Form action={followUser} class="w-full">
         <input type="hidden" name="userId" value={id} />
         <Button
+          onClick$={async (ev) => {
+            await ev.stopPropagation();
+          }}
           fullWidth
           size="btn-sm"
           colorScheme={isFollowing ? "btn-ghost" : "btn-neutral"}

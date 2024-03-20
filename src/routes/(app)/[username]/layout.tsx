@@ -1,48 +1,16 @@
 import { Slot, component$ } from "@builder.io/qwik";
 import { MoreDropdown } from "./more-dropdown";
 import { ProfileTabs } from "./profile-tabs";
-import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
-import { prisma } from "~/utils/prisma";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { EditProfileModal } from "./edit-profile-modal";
 import { GithubAccount } from "./github-account";
 import { ImagePreview } from "./image-preview";
 import PrivateIcon from "~/assets/icons/private.svg?jsx";
-export const useGetUser = routeLoader$(async ({ params, error }) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      username: params.username,
-    },
-  });
+import { FollowAction } from "~/components/user/follow-action";
+import { useGetUser, useUpdateUserProfile } from "~/shared/user";
 
-  if (!user) {
-    throw error(404, "User not found");
-  }
-  return user;
-});
-export const useUpdateUserProfile = routeAction$(
-  async ({ id, ...data }, { redirect, url }) => {
-    console.log(data.private);
-    await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        ...data,
-        private: data.private === "on",
-      },
-    });
+export { useGetUser, useUpdateUserProfile };
 
-    throw redirect(302, url.href);
-  },
-  zod$((z) => ({
-    id: z.string(),
-    name: z.string(),
-    bio: z.string(),
-    link: z.string(),
-    private: z.string(),
-  })),
-);
 export default component$(() => {
   const user = useGetUser();
   const session = useAuthSession();
@@ -104,7 +72,11 @@ export default component$(() => {
           <EditProfileModal user={user.value} />
         ) : (
           <div class="grid grid-cols-2 gap-3">
-            <button class="btn btn-neutral btn-sm">Follow</button>
+            <FollowAction
+              id={user.value.id}
+              isFollowing={user.value.isFollowing}
+              shouldFollowBack={user.value.shouldFollowBack}
+            />
             <button class="btn btn-sm">Mention</button>
           </div>
         )}
