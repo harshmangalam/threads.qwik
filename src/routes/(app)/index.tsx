@@ -1,27 +1,14 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
+import { type DocumentHead } from "@builder.io/qwik-city";
 import { ThreadCard } from "~/components/thread-card";
 import { UserSuggestions } from "~/components/user/user-suggestions";
-import { prisma } from "~/utils/prisma";
 
-export const useGetThreads = routeLoader$(async () => {
-  const threads = await prisma.thread.findMany({
-    include: {
-      user: {
-        select: {
-          id: true,
-          username: true,
-          image: true,
-        },
-      },
-    },
-  });
-  return threads;
-});
-export const useGetUsers = routeLoader$(async () => {
-  const users = await prisma.user.findMany();
-  return users;
-});
+import { useGetUsers } from "~/shared/user";
+import { useGetThreads } from "~/shared/thread";
+
+export { useGetUsers } from "~/shared/user";
+export { useGetThreads } from "~/shared/thread";
+
 export default component$(() => {
   const thredas = useGetThreads();
   const users = useGetUsers();

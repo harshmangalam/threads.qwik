@@ -1,5 +1,5 @@
 import type { Session } from "@auth/core/types";
-import { routeAction$, zod$ } from "@builder.io/qwik-city";
+import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
 import { prisma } from "~/utils/prisma";
 
 // eslint-disable-next-line qwik/loader-location
@@ -58,3 +58,19 @@ export const useUpdateReplyPrivacy = routeAction$(
     replyPrivacy: z.enum(["ANYONE", "FOLLOWING", "MENTION"]),
   })),
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetThreads = routeLoader$(async () => {
+  const threads = await prisma.thread.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return threads;
+});
