@@ -7,13 +7,18 @@ import { GithubAccount } from "./github-account";
 import { ImagePreview } from "./image-preview";
 import PrivateIcon from "~/assets/icons/private.svg?jsx";
 import { FollowAction } from "~/components/user/follow-action";
-import { useGetUser, useUpdateUserProfile } from "~/shared/user";
+import {
+  useGetFollowersCount,
+  useGetUser,
+  useUpdateUserProfile,
+} from "~/shared/user";
 
-export { useGetUser, useUpdateUserProfile };
+export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 
 export default component$(() => {
   const user = useGetUser();
   const session = useAuthSession();
+  const followersCount = useGetFollowersCount();
   return (
     <div>
       {/* profile details section  */}
@@ -52,8 +57,11 @@ export default component$(() => {
         </div>
         <div class="mt-4 flex items-center justify-between gap-4">
           <div class="flex items-center gap-2 text-sm opacity-60">
-            <div>13K followers</div>
-            <div>·</div>
+            <div>
+              {followersCount.value}{" "}
+              {followersCount.value >= 2 ? "followers" : "follower"}
+            </div>
+            {user.value.link && <div>·</div>}
             {user.value.link && (
               <a href={user.value.link} target="_blank">
                 {user.value.link}

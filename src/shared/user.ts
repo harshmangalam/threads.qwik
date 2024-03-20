@@ -36,6 +36,15 @@ async function isFollowing(user1?: string, user2?: string) {
 
   return !!following;
 }
+async function followersCount(username: string) {
+  return prisma.follows.count({
+    where: {
+      following: {
+        username,
+      },
+    },
+  });
+}
 
 // eslint-disable-next-line qwik/loader-location
 export const useFollowUser = routeAction$(
@@ -69,6 +78,30 @@ export const useFollowUser = routeAction$(
   },
   zod$((z) => ({
     userId: z.string(),
+  })),
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useUpdateUserProfile = routeAction$(
+  async ({ id, ...data }, { redirect, url }) => {
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+        private: data.private === "on",
+      },
+    });
+
+    throw redirect(302, url.href);
+  },
+  zod$((z) => ({
+    id: z.string(),
+    name: z.string(),
+    bio: z.string(),
+    link: z.string(),
+    private: z.string(),
   })),
 );
 
@@ -112,26 +145,7 @@ export const useGetUser = routeLoader$(async ({ params, error, sharedMap }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useUpdateUserProfile = routeAction$(
-  async ({ id, ...data }, { redirect, url }) => {
-    console.log(data.private);
-    await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        ...data,
-        private: data.private === "on",
-      },
-    });
-
-    throw redirect(302, url.href);
-  },
-  zod$((z) => ({
-    id: z.string(),
-    name: z.string(),
-    bio: z.string(),
-    link: z.string(),
-    private: z.string(),
-  })),
-);
+export const useGetFollowersCount = routeLoader$(async ({ params }) => {
+  const count = await followersCount(params.username);
+  return count;
+});
