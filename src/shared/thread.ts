@@ -1,7 +1,11 @@
 import type { Session } from "@auth/core/types";
 import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
+import type { Thread } from "@prisma/client";
 import { prisma } from "~/utils/prisma";
 
+export type ThreadType = Thread & {
+  isSaved: boolean;
+};
 async function saveThread(threadId: string, userId: string) {
   return prisma.savedThreads.create({
     data: {
@@ -20,6 +24,16 @@ async function unSaveThread(threadId: string, userId: string) {
       },
     },
   });
+}
+
+async function isSavedThread(threadId?: string, userId?: string) {
+  const saved = await prisma.savedThreads.count({
+    where: {
+      threadId,
+      userId,
+    },
+  });
+  return !!saved;
 }
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
@@ -79,7 +93,8 @@ export const useUpdateReplyPrivacy = routeAction$(
 );
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetThreads = routeLoader$(async () => {
+export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
+  const session: Session | null = sharedMap.get("session");
   const threads = await prisma.thread.findMany({
     include: {
       user: {
@@ -91,7 +106,15 @@ export const useGetThreads = routeLoader$(async () => {
       },
     },
   });
-  return threads;
+  const results = [];
+  for await (const thread of threads) {
+    const isSaved = await isSavedThread(thread.id, session?.user.id);
+    results.push({
+      ...thread,
+      isSaved: isSaved,
+    });
+  }
+  return results;
 });
 
 // eslint-disable-next-line qwik/loader-location
