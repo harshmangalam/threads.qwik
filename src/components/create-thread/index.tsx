@@ -2,7 +2,9 @@ import { Slot, component$, useSignal } from "@builder.io/qwik";
 import { ReplyDropdown } from "./reply-dropdown";
 import { Form } from "@builder.io/qwik-city";
 import { useCreateThread } from "~/routes/(app)/layout";
+import { useAuthSession } from "~/routes/plugin@auth";
 export const CreateThread = component$(() => {
+  const session = useAuthSession();
   const createThread = useCreateThread();
   const modal = useSignal<HTMLDialogElement>();
   return (
@@ -19,18 +21,21 @@ export const CreateThread = component$(() => {
           }}
         >
           <div class="flex gap-3">
-            <div class="avatar">
-              <div class="h-9 w-9 rounded-full">
-                <img
-                  width={36}
-                  height={36}
-                  class="h-9 w-9"
-                  src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                />
+            {session.value?.user.image && (
+              <div class="avatar">
+                <div class="h-9 w-9 rounded-full">
+                  <img
+                    alt={session.value.user.username}
+                    width={36}
+                    height={36}
+                    class="h-9 w-9"
+                    src={session.value.user.image}
+                  />
+                </div>
               </div>
-            </div>
+            )}
             <div class="flex flex-1 flex-col gap-1">
-              <h3 class="font-medium">harshmangalam_</h3>
+              <h3 class="font-medium">{session.value?.user.username}</h3>
               <textarea
                 autoFocus
                 name="text"
