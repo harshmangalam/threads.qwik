@@ -1,23 +1,15 @@
 import { component$ } from "@builder.io/qwik";
 import MenuIcon from "~/assets/icons/menu-horiz.svg?jsx";
 import { useAuthSession } from "~/routes/plugin@auth";
-import { useDeleteThread } from "~/shared/thread";
+import { type ThreadType, useDeleteThread } from "~/shared/thread";
 import { EditReplyPrivacy } from "./edit-reply-privacy";
 import { SaveThread } from "./save-thread";
 
 export const ActionsDropdown = component$(
-  ({
-    userId,
-    threadId,
-    replyPrivacy,
-  }: {
-    userId: string;
-    threadId: string;
-    replyPrivacy: string;
-  }) => {
+  ({ thread }: { thread: ThreadType }) => {
     const session = useAuthSession();
     const deleteThread = useDeleteThread();
-    const isCurrentUser = session.value?.user.id === userId;
+    const isCurrentUser = session.value?.user.id === thread.userId;
     return (
       <div class="dropdown dropdown-end">
         <div tabIndex={0} role="button" class="btn btn-circle btn-ghost btn-sm">
@@ -28,7 +20,7 @@ export const ActionsDropdown = component$(
           class="menu  dropdown-content z-[1] w-44  rounded-xl   bg-base-100 shadow-md"
         >
           <li>
-            <SaveThread threadId={threadId} />
+            <SaveThread isSaved={thread.isSaved} threadId={thread.id} />
           </li>
           <li>
             <button>Hide</button>
@@ -37,12 +29,15 @@ export const ActionsDropdown = component$(
             <button>Mute</button>
           </li>
           {isCurrentUser && (
-            <EditReplyPrivacy replyPrivacy={replyPrivacy} threadId={threadId} />
+            <EditReplyPrivacy
+              replyPrivacy={thread.replyPrivacy}
+              threadId={thread.id}
+            />
           )}
           <li>
             {isCurrentUser ? (
               <button
-                onClick$={() => deleteThread.submit({ threadId })}
+                onClick$={() => deleteThread.submit({ threadId: thread.id })}
                 class="flex justify-start font-medium text-error"
               >
                 Delete

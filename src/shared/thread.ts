@@ -1,10 +1,11 @@
 import type { Session } from "@auth/core/types";
 import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
-import type { Thread } from "@prisma/client";
+import type { Thread, User } from "@prisma/client";
 import { prisma } from "~/utils/prisma";
 
 export type ThreadType = Thread & {
   isSaved: boolean;
+  user: Pick<User, "id" | "username" | "image">;
 };
 async function saveThread(threadId: string, userId: string) {
   return prisma.savedThreads.create({
@@ -150,4 +151,36 @@ export const useSaveThread = routeAction$(
   zod$((z) => ({
     threadId: z.string(),
   })),
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetProfileThreds = routeLoader$(
+  async ({ params, sharedMap }) => {
+    const session: Session | null = sharedMap.get("session");
+    const threads = await prisma.thread.findMany({
+      where: {
+        user: {
+          username: params.username,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+    });
+    const results = [];
+    for await (const thread of threads) {
+      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      results.push({
+        ...thread,
+        isSaved: isSaved,
+      });
+    }
+    return results;
+  },
 );

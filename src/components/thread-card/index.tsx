@@ -5,18 +5,13 @@ import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
 import { ThreadLikes } from "./thread-likes";
-import { type Thread } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
+import { type ThreadType } from "~/shared/thread";
 
 type ThreadCardProps = {
-  thread: Thread & {
-    user: {
-      username: string;
-      id: string;
-      image?: string | null;
-    };
-  };
+  thread: ThreadType;
 };
+
 export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
   return (
     <article>
@@ -37,11 +32,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
               <div class="text-sm opacity-50">
                 {formatDistanceToNow(thread.createdAt)}
               </div>
-              <ActionsDropdown
-                userId={thread.userId}
-                threadId={thread.id}
-                replyPrivacy={thread.replyPrivacy}
-              />
+              <ActionsDropdown thread={thread} />
             </div>
           </div>
           <p class="text-sm">{thread.text}</p>

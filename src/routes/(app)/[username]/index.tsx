@@ -1,27 +1,8 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
 import { ThreadCard } from "~/components/thread-card";
-import { prisma } from "~/utils/prisma";
+import { useGetProfileThreds } from "~/shared/thread";
+export { useGetProfileThreds };
 
-export const useGetProfileThreds = routeLoader$(async ({ params }) => {
-  const threads = await prisma.thread.findMany({
-    where: {
-      user: {
-        username: params.username,
-      },
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          username: true,
-          image: true,
-        },
-      },
-    },
-  });
-  return threads;
-});
 export default component$(() => {
   const threads = useGetProfileThreds();
   return (
