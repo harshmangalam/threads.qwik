@@ -184,3 +184,31 @@ export const useGetProfileThreds = routeLoader$(
     return results;
   },
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
+  const session: Session | null = sharedMap.get("session");
+  const savedThreads = await prisma.savedThreads.findMany({
+    where: {
+      userId: session?.user.id,
+    },
+    include: {
+      thread: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  const results: ThreadType[] = [];
+  for await (const data of savedThreads) {
+    results.push({ ...data.thread, isSaved: true });
+  }
+  return results;
+});
