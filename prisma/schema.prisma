@@ -58,24 +58,26 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String     @unique
+  email         String         @unique
   emailVerified DateTime?
   image         String
-  username      String     @unique @db.VarChar(39)
-  status        StatusType @default(ONLINE)
-  bio           String     @default("") @db.VarChar(255)
-  role          RoleType   @default(USER)
-  private       Boolean    @default(false)
+  username      String         @unique @db.VarChar(39)
+  status        StatusType     @default(ONLINE)
+  bio           String         @default("") @db.VarChar(255)
+  role          RoleType       @default(USER)
+  private       Boolean        @default(false)
   link          String?
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]
-  followedBy    Follows[]  @relation("followedBy")
-  following     Follows[]  @relation("following")
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  savedThreads  SavedThreads[]
+  followedBy    Follows[]      @relation("followedBy")
+  following     Follows[]      @relation("following")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -92,6 +94,7 @@ model Thread {
   user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   replyPrivacy ReplyPrivacyType @default(ANYONE)
+  savedByUsers SavedThreads[]
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 }
@@ -105,4 +108,15 @@ model Follows {
 
   @@id([followingId, followedById])
   @@unique([followedById, followingId])
+}
+
+model SavedThreads {
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+  thread   Thread   @relation(fields: [threadId], references: [id])
+  threadId String
+  savedAt  DateTime @default(now())
+
+  @@id([userId, threadId])
+  @@unique([userId, threadId])
 }

@@ -2,6 +2,25 @@ import type { Session } from "@auth/core/types";
 import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
 import { prisma } from "~/utils/prisma";
 
+async function saveThread(threadId: string, userId: string) {
+  return prisma.savedThreads.create({
+    data: {
+      threadId,
+      userId,
+    },
+  });
+}
+
+async function unSaveThread(threadId: string, userId: string) {
+  return prisma.savedThreads.delete({
+    where: {
+      userId_threadId: {
+        threadId,
+        userId,
+      },
+    },
+  });
+}
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
   async (form, { sharedMap, redirect, url }) => {
@@ -74,3 +93,38 @@ export const useGetThreads = routeLoader$(async () => {
   });
   return threads;
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useSaveThread = routeAction$(
+  async ({ threadId }, { redirect, sharedMap, error, url }) => {
+    const session: Session | null = sharedMap.get("session");
+    if (!session || new Date(session.expires) < new Date()) {
+      throw redirect(302, "/login/");
+    }
+    try {
+      await saveThread(threadId, session.user.id);
+      throw redirect(302, url.href);
+    } catch (err: any) {
+      if (err.code === "P2002") {
+        try {
+          await unSaveThread(threadId, session.user.id);
+          throw redirect(302, url.href);
+        } catch (err: any) {
+          if (err.message) {
+            console.log("Error while unsave thread", err.message);
+            throw error(500, err.message);
+          }
+          throw err;
+        }
+      }
+      if (err.message) {
+        console.log("Error while save thread", err.message);
+        throw error(500, err.message);
+      }
+      throw err;
+    }
+  },
+  zod$((z) => ({
+    threadId: z.string(),
+  })),
+);

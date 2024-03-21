@@ -3,6 +3,7 @@ import MenuIcon from "~/assets/icons/menu-horiz.svg?jsx";
 import { useAuthSession } from "~/routes/plugin@auth";
 import { useDeleteThread } from "~/shared/thread";
 import { EditReplyPrivacy } from "./edit-reply-privacy";
+import { SaveThread } from "./save-thread";
 
 export const ActionsDropdown = component$(
   ({
@@ -27,7 +28,7 @@ export const ActionsDropdown = component$(
           class="menu  dropdown-content z-[1] w-44  rounded-xl   bg-base-100 shadow-md"
         >
           <li>
-            <button>Save</button>
+            <SaveThread threadId={threadId} />
           </li>
           <li>
             <button>Hide</button>
