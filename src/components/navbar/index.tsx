@@ -16,7 +16,7 @@ export const Navbar = component$(() => {
             <NavLinks />
           </section>
 
-          <section class=" col-span-3 flex items-center justify-end">
+          <section class="col-span-3 flex items-center justify-end">
             <NavDropdown />
           </section>
         </div>
