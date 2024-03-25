@@ -11,7 +11,7 @@ import { useAuthSession } from "~/routes/plugin@auth";
 export const NavLinks = component$(() => {
   const session = useAuthSession();
   return (
-    <div class="flex items-center">
+    <div class="flex flex-1 items-center justify-center">
       <NavLink href="/">
         <HomeIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <HomeIcon q:slot="activeIcon" class="h-7 w-7 " />

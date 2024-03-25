@@ -1,5 +1,20 @@
 import { component$ } from "@builder.io/qwik";
-
+import { SearchForm } from "./search-form";
+import { User } from "./user";
+import { useSearchUsers } from "~/shared/user";
+export { useSearchUsers };
 export default component$(() => {
-  return <div>Search</div>;
+  const searchUsers = useSearchUsers();
+  return (
+    <div>
+      <SearchForm />
+      <ul class="mt-6 flex flex-col">
+        {searchUsers.value.map((user) => (
+          <li key={user.id}>
+            <User user={user} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 });

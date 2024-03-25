@@ -12,7 +12,7 @@ export const Navbar = component$(() => {
             <Logo />
           </section>
 
-          <section class=" col-span-6 flex items-center">
+          <section class="col-span-6">
             <NavLinks />
           </section>
 

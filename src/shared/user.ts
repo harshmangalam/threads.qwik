@@ -6,6 +6,14 @@ export type UserSuggestionType = User & {
   isFollowing: boolean;
   shouldFollowBack: boolean;
 };
+export type UserSearchType = Pick<
+  User,
+  "id" | "name" | "username" | "image"
+> & {
+  followersCount: number;
+  isFollowing: boolean;
+  shouldFollowBack: boolean;
+};
 async function followUser(followedById: string, followingId: string) {
   return prisma.follows.create({
     data: {
@@ -149,3 +157,50 @@ export const useGetFollowersCount = routeLoader$(async ({ params }) => {
   const count = await followersCount(params.username);
   return count;
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useSearchUsers = routeLoader$(
+  async ({ query, error, sharedMap }) => {
+    const session: Session | null = sharedMap.get("session");
+    const search = query.get("q");
+    if (!search) {
+      return [];
+    }
+    try {
+      const users = await prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: search } },
+            { username: { contains: search } },
+          ],
+        },
+        select: {
+          id: true,
+          name: true,
+          username: true,
+          image: true,
+          _count: {
+            select: {
+              followedBy: true,
+            },
+          },
+        },
+      });
+      const results: UserSearchType[] = [];
+      for await (const user of users) {
+        const following = await isFollowing(session?.user.id, user.id);
+        const shouldFollowBack = await isFollowing(user.id, session?.user.id);
+        results.push({
+          ...user,
+          followersCount: user._count.followedBy,
+          isFollowing: following,
+          shouldFollowBack,
+        });
+      }
+      return results;
+    } catch (err) {
+      console.log(err);
+      throw error(500, "Internal server error");
+    }
+  },
+);
