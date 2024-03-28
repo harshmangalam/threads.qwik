@@ -1,5 +1,10 @@
 import type { Session } from "@auth/core/types";
-import { routeAction$, routeLoader$, zod$ } from "@builder.io/qwik-city";
+import {
+  routeAction$,
+  routeLoader$,
+  server$,
+  zod$,
+} from "@builder.io/qwik-city";
 import type { Thread, User } from "@prisma/client";
 import { prisma } from "~/utils/prisma";
 
@@ -302,3 +307,24 @@ export const useLikeThread = routeAction$(
     threadId: z.string(),
   })),
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const getThreadsLikes = server$(async (threadId: string) => {
+  const likes = await prisma.likedThreads.findMany({
+    where: {
+      threadId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return likes;
+});

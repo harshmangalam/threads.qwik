@@ -4,9 +4,9 @@ import { Like } from "./like";
 import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
-import { ThreadLikes } from "./thread-likes";
 import { formatDistanceToNow } from "date-fns";
 import { type ThreadType } from "~/shared/thread";
+import { LikesModal } from "./likes-modal";
 
 type ThreadCardProps = {
   thread: ThreadType;
@@ -54,9 +54,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <Share />
           </div>
           <div class="mt-2">
-            {thread.likesCount ? (
-              <ThreadLikes likesCount={thread.likesCount} />
-            ) : null}
+            {thread.likesCount ? <LikesModal thread={thread} /> : null}
           </div>
         </div>
       </header>

@@ -20,6 +20,7 @@ export {
   useUpdateReplyPrivacy,
   useSaveThread,
   useLikeThread,
+  getThreadsLikes,
 } from "~/shared/thread";
 
 export { useFollowUser } from "~/shared/user";
