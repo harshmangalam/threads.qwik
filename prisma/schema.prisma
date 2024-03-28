@@ -72,10 +72,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]
-  savedThreads  SavedThreads[]
+  savedThreads  SavedThreads[] @relation(name: "usersThreadsSave")
   followedBy    Follows[]      @relation("followedBy")
   following     Follows[]      @relation("following")
-  likedThreads  LikedThreads[]
+  likedThreads  LikedThreads[] @relation(name: "usersThreadsLikes")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -95,8 +95,8 @@ model Thread {
   user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   replyPrivacy ReplyPrivacyType @default(ANYONE)
-  savedByUsers SavedThreads[]
-  likes        LikedThreads[]
+  savedByUsers SavedThreads[]   @relation(name: "savedThreads")
+  likes        LikedThreads[]   @relation(name: "threadsLikes")
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 }
@@ -113,9 +113,9 @@ model Follows {
 }
 
 model SavedThreads {
-  user     User     @relation(fields: [userId], references: [id])
+  user     User     @relation(name: "usersThreadsSave", fields: [userId], references: [id])
   userId   String
-  thread   Thread   @relation(fields: [threadId], references: [id])
+  thread   Thread   @relation(name: "savedThreads", fields: [threadId], references: [id])
   threadId String
   savedAt  DateTime @default(now())
 
@@ -124,9 +124,9 @@ model SavedThreads {
 }
 
 model LikedThreads {
-  user     User     @relation(fields: [userId], references: [id])
+  user     User     @relation(name: "usersThreadsLikes", fields: [userId], references: [id])
   userId   String
-  thread   Thread   @relation(fields: [threadId], references: [id])
+  thread   Thread   @relation(name: "threadsLikes", fields: [threadId], references: [id])
   threadId String
   likedAt  DateTime @default(now())
 

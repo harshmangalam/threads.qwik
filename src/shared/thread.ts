@@ -106,15 +106,26 @@ export const useCreateThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteThread = routeAction$(
-  async ({ threadId }, { redirect, url }) => {
-    console.log(url.href);
-    await prisma.thread.delete({
-      where: {
-        id: threadId,
-      },
-    });
+  async ({ threadId }, { redirect, url, error }) => {
+    try {
+      await prisma.likedThreads.deleteMany({
+        where: {
+          threadId,
+        },
+      });
+      await prisma.thread.delete({
+        where: {
+          id: threadId,
+        },
+      });
 
-    throw redirect(302, url.href);
+      throw redirect(302, url.pathname);
+    } catch (err: any) {
+      if (err.message) {
+        throw error(500, "Internal server error");
+      }
+      throw err;
+    }
   },
   zod$((z) => ({
     threadId: z.string(),
