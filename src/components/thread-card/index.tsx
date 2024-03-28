@@ -48,7 +48,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
           </picture> */}
 
           <div class="mt-4 flex items-center gap-2">
-            <Like />
+            <Like threadId={thread.id} />
             <Reply />
             <Repost />
             <Share />

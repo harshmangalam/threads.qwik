@@ -36,6 +36,26 @@ async function isSavedThread(threadId?: string, userId?: string) {
   });
   return !!saved;
 }
+
+async function likeThread(threadId: string, userId: string) {
+  return prisma.likedThreads.create({
+    data: {
+      threadId,
+      userId,
+    },
+  });
+}
+
+async function unlikeThread(threadId: string, userId: string) {
+  return prisma.likedThreads.delete({
+    where: {
+      userId_threadId: {
+        threadId,
+        userId,
+      },
+    },
+  });
+}
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
   async (form, { sharedMap, redirect, url }) => {
@@ -212,3 +232,39 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
   }
   return results;
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useLikeThread = routeAction$(
+  async ({ threadId }, { sharedMap, redirect, url, error }) => {
+    const session: Session | null = sharedMap.get("session");
+    if (!session || new Date(session.expires) < new Date()) {
+      throw redirect(302, "/login");
+    }
+
+    try {
+      await likeThread(threadId, session.user.id);
+      throw redirect(301, url.href);
+    } catch (err: any) {
+      if (err.code === "P2002") {
+        try {
+          await unlikeThread(threadId, session.user.id);
+          throw redirect(301, url.href);
+        } catch (err: any) {
+          if (err.message) {
+            console.log("Error thread unlike", err.message);
+            throw error(500, "Internal server error");
+          }
+          throw err;
+        }
+      }
+      if (err.message) {
+        console.log("Error thread like", err.message);
+        throw error(500, "Internal server error");
+      }
+      throw err;
+    }
+  },
+  zod$((z) => ({
+    threadId: z.string(),
+  })),
+);

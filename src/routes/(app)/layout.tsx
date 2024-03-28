@@ -19,6 +19,7 @@ export {
   useDeleteThread,
   useUpdateReplyPrivacy,
   useSaveThread,
+  useLikeThread,
 } from "~/shared/thread";
 
 export { useFollowUser } from "~/shared/user";
