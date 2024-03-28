@@ -5,6 +5,8 @@ import { prisma } from "~/utils/prisma";
 
 export type ThreadType = Thread & {
   isSaved: boolean;
+  isLiked: boolean;
+  likesCount: number;
   user: Pick<User, "id" | "username" | "image">;
 };
 async function saveThread(threadId: string, userId: string) {
@@ -53,6 +55,25 @@ async function unlikeThread(threadId: string, userId: string) {
         threadId,
         userId,
       },
+    },
+  });
+}
+
+async function isLikedThread(threadId: string, userId?: string) {
+  const count = await prisma.likedThreads.count({
+    where: {
+      threadId,
+      userId,
+    },
+  });
+
+  return Boolean(count);
+}
+
+async function getThreadLikesCount(threadId: string) {
+  return prisma.likedThreads.count({
+    where: {
+      threadId,
     },
   });
 }
@@ -130,9 +151,14 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   const results = [];
   for await (const thread of threads) {
     const isSaved = await isSavedThread(thread.id, session?.user.id);
+    const isLiked = await isLikedThread(thread.id, session?.user.id);
+    const likesCount = await getThreadLikesCount(thread.id);
+
     results.push({
       ...thread,
-      isSaved: isSaved,
+      isSaved,
+      isLiked,
+      likesCount,
     });
   }
   return results;
@@ -196,9 +222,14 @@ export const useGetProfileThreds = routeLoader$(
     const results = [];
     for await (const thread of threads) {
       const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(thread.id);
+
       results.push({
         ...thread,
         isSaved: isSaved,
+        isLiked,
+        likesCount,
       });
     }
     return results;
@@ -228,7 +259,10 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results: ThreadType[] = [];
   for await (const data of savedThreads) {
-    results.push({ ...data.thread, isSaved: true });
+    const isLiked = await isLikedThread(data.threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(data.threadId);
+
+    results.push({ ...data.thread, isSaved: true, isLiked, likesCount });
   }
   return results;
 });
@@ -243,12 +277,12 @@ export const useLikeThread = routeAction$(
 
     try {
       await likeThread(threadId, session.user.id);
-      throw redirect(301, url.href);
+      throw redirect(301, url.pathname);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
           await unlikeThread(threadId, session.user.id);
-          throw redirect(301, url.href);
+          throw redirect(301, url.pathname);
         } catch (err: any) {
           if (err.message) {
             console.log("Error thread unlike", err.message);
