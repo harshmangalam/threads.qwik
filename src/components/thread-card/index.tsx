@@ -35,7 +35,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
               <ActionsDropdown thread={thread} />
             </div>
           </div>
-          <p class="text-sm">{thread.text}</p>
+          <p>{thread.text}</p>
 
           {/* <picture class="mt-4">
             <img
