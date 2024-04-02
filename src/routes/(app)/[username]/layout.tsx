@@ -43,7 +43,7 @@ export default component$(() => {
             {user.value.image && (
               <ImagePreview src={user.value.image}>
                 <div class="avatar">
-                  <div class="w-24 rounded-full">
+                  <div class="w-16 rounded-full md:w-24">
                     <img width={96} height={96} src={user.value.image} />
                   </div>
                 </div>
