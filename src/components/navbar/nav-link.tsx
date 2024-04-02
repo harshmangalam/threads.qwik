@@ -10,7 +10,7 @@ export const NavLink = component$(({ href, ...props }: NavLinkProps) => {
     <Link
       {...props}
       href={href}
-      class={`hover:bg-base-200 bg-base-100 mx-0.5 my-1 rounded-lg px-8 py-5`}
+      class={`grid h-full w-full place-items-center rounded-lg bg-base-100 hover:bg-base-200 md:px-8 md:py-5`}
     >
       {isActive ? <Slot name="activeIcon" /> : <Slot name="icon" />}
     </Link>

@@ -11,7 +11,7 @@ import { useAuthSession } from "~/routes/plugin@auth";
 export const NavLinks = component$(() => {
   const session = useAuthSession();
   return (
-    <div class="flex flex-1 items-center justify-center">
+    <div class="grid grid-cols-5 items-center justify-center md:flex">
       <NavLink href="/">
         <HomeIcon q:slot="icon" class="h-7 w-7 fill-none opacity-40" />
         <HomeIcon q:slot="activeIcon" class="h-7 w-7 " />
@@ -21,7 +21,7 @@ export const NavLinks = component$(() => {
         <SearchIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
       <CreateThread>
-        <button class="mx-0.5 my-1 rounded-lg bg-base-100 px-8 py-5 hover:bg-base-200">
+        <button class="mx-0.5 my-1 grid h-full w-full place-items-center rounded-lg bg-base-100 hover:bg-base-200 md:px-8 md:py-5">
           <CreateIcon class="h-7 w-7 opacity-40" />
         </button>
       </CreateThread>

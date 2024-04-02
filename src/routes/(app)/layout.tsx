@@ -1,6 +1,7 @@
 import type { Session } from "@auth/core/types";
 import { component$, Slot } from "@builder.io/qwik";
 import { type RequestHandler } from "@builder.io/qwik-city";
+import { BottomNavigation } from "~/components/bottom-navigation";
 import { Navbar } from "~/components/navbar";
 
 export const onRequest: RequestHandler = async ({
@@ -29,9 +30,10 @@ export default component$(() => {
   return (
     <div>
       <Navbar />
-      <main class="mx-auto max-w-[620px] px-6 py-4">
+      <main class="mx-auto mb-20 max-w-2xl px-4 py-4">
         <Slot />
       </main>
+      <BottomNavigation />
     </div>
   );
 });
