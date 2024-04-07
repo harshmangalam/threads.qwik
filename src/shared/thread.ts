@@ -82,6 +82,26 @@ async function getThreadLikesCount(threadId: string) {
     },
   });
 }
+
+async function repostThread(threadId: string, userId: string) {
+  return prisma.reposts.create({
+    data: {
+      threadId,
+      userId,
+    },
+  });
+}
+
+async function undoRepost(threadId: string, userId: string) {
+  return prisma.reposts.delete({
+    where: {
+      userId_threadId: {
+        threadId,
+        userId,
+      },
+    },
+  });
+}
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
   async (form, { sharedMap, redirect, url }) => {
@@ -309,6 +329,41 @@ export const useLikeThread = routeAction$(
       }
       if (err.message) {
         console.log("Error thread like", err.message);
+        throw error(500, "Internal server error");
+      }
+      throw err;
+    }
+  },
+  zod$((z) => ({
+    threadId: z.string(),
+  })),
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useRepostThreads = routeAction$(
+  async ({ threadId }, { error, redirect, sharedMap, url }) => {
+    const session: Session | null = sharedMap.get("session");
+    if (!session || new Date(session.expires) < new Date()) {
+      throw redirect(302, "/login");
+    }
+    try {
+      await repostThread(threadId, session.user.id);
+      throw redirect(301, url.pathname);
+    } catch (err: any) {
+      if (err.code === "P2002") {
+        try {
+          await undoRepost(threadId, session.user.id);
+          throw redirect(301, url.pathname);
+        } catch (err: any) {
+          if (err.message) {
+            console.log("Error undo thread repost", err.message);
+            throw error(500, "Internal server error");
+          }
+          throw err;
+        }
+      }
+      if (err.message) {
+        console.log("Error thread repost", err.message);
         throw error(500, "Internal server error");
       }
       throw err;

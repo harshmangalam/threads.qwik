@@ -22,6 +22,7 @@ export {
   useSaveThread,
   useLikeThread,
   getThreadsLikes,
+  useRepostThreads,
 } from "~/shared/thread";
 
 export { useFollowUser } from "~/shared/user";

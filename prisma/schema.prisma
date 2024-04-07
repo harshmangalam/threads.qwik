@@ -72,6 +72,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   threads       Thread[]
+  repostThreads Reposts[]      @relation(name: "usersThreadsReposts")
   savedThreads  SavedThreads[] @relation(name: "usersThreadsSave")
   followedBy    Follows[]      @relation("followedBy")
   following     Follows[]      @relation("following")
@@ -97,6 +98,7 @@ model Thread {
   replyPrivacy ReplyPrivacyType @default(ANYONE)
   savedByUsers SavedThreads[]   @relation(name: "savedThreads")
   likes        LikedThreads[]   @relation(name: "threadsLikes")
+  reposts      Reposts[]        @relation(name: "repostThreads")
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 }
@@ -116,6 +118,17 @@ model SavedThreads {
   user     User     @relation(name: "usersThreadsSave", fields: [userId], references: [id])
   userId   String
   thread   Thread   @relation(name: "savedThreads", fields: [threadId], references: [id])
+  threadId String
+  savedAt  DateTime @default(now())
+
+  @@id([userId, threadId])
+  @@unique([userId, threadId])
+}
+
+model Reposts {
+  user     User     @relation(name: "usersThreadsReposts", fields: [userId], references: [id])
+  userId   String
+  thread   Thread   @relation(name: "repostThreads", fields: [threadId], references: [id])
   threadId String
   savedAt  DateTime @default(now())
 
