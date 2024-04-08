@@ -21,7 +21,7 @@ export const NavLinks = component$(() => {
         <SearchIcon q:slot="activeIcon" class="h-7 w-7" />
       </NavLink>
       <CreateThread>
-        <button class="mx-0.5 my-1 grid h-full w-full place-items-center rounded-lg bg-base-100 hover:bg-base-200 md:px-8 md:py-5">
+        <button class="grid h-full w-full place-items-center rounded-lg bg-base-100 px-4 py-2 hover:bg-base-200 md:px-8 md:py-5">
           <CreateIcon class="h-7 w-7 opacity-40" />
         </button>
       </CreateThread>
