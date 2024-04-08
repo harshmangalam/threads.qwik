@@ -11,7 +11,9 @@ import { prisma } from "~/utils/prisma";
 export type ThreadType = Thread & {
   isSaved: boolean;
   isLiked: boolean;
+  reposted: boolean;
   likesCount: number;
+  repostsCount: number;
   user: Pick<User, "id" | "username" | "image">;
 };
 async function saveThread(threadId: string, userId: string) {
@@ -102,6 +104,24 @@ async function undoRepost(threadId: string, userId: string) {
     },
   });
 }
+
+async function getRepostsCount(threadId: string) {
+  return prisma.reposts.count({
+    where: {
+      threadId,
+    },
+  });
+}
+async function hasRepostedThread(threadId?: string, userId?: string) {
+  const reposted = await prisma.reposts.count({
+    where: {
+      threadId,
+      userId,
+    },
+  });
+  return !!reposted;
+}
+
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
   async (form, { sharedMap, redirect, url }) => {
@@ -188,6 +208,8 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   for await (const thread of threads) {
     const isSaved = await isSavedThread(thread.id, session?.user.id);
     const isLiked = await isLikedThread(thread.id, session?.user.id);
+    const reposted = await hasRepostedThread(thread.id, session?.user.id);
+    const repostsCount = await getRepostsCount(thread.id);
     const likesCount = await getThreadLikesCount(thread.id);
 
     results.push({
@@ -195,6 +217,8 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
       isSaved,
       isLiked,
       likesCount,
+      reposted,
+      repostsCount,
     });
   }
   return results;
@@ -260,12 +284,15 @@ export const useGetProfileThreds = routeLoader$(
       const isSaved = await isSavedThread(thread.id, session?.user.id);
       const isLiked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
-
+      const reposted = await hasRepostedThread(thread.id, session?.user.id);
+      const repostsCount = await getRepostsCount(thread.id);
       results.push({
         ...thread,
         isSaved: isSaved,
         isLiked,
         likesCount,
+        reposted,
+        repostsCount,
       });
     }
     return results;
@@ -297,8 +324,17 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
   for await (const data of savedThreads) {
     const isLiked = await isLikedThread(data.threadId, session?.user.id);
     const likesCount = await getThreadLikesCount(data.threadId);
+    const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
+    const repostsCount = await getRepostsCount(data.thread.id);
 
-    results.push({ ...data.thread, isSaved: true, isLiked, likesCount });
+    results.push({
+      ...data.thread,
+      isSaved: true,
+      isLiked,
+      likesCount,
+      reposted,
+      repostsCount,
+    });
   }
   return results;
 });

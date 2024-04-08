@@ -50,7 +50,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
           <div class="mt-4 flex items-center gap-2">
             <Like threadId={thread.id} isLiked={thread.isLiked} />
             <Reply />
-            <Repost threadId={thread.id} />
+            <Repost threadId={thread.id} reposted={thread.reposted} />
             <Share />
           </div>
           <div class="mt-2">
