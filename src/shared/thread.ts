@@ -430,3 +430,48 @@ export const getThreadsLikes = server$(async (threadId: string) => {
 
   return likes;
 });
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetRepostedThreads = routeLoader$(
+  async ({ params, sharedMap }) => {
+    const session: Session | null = sharedMap.get("session");
+    const reposts = await prisma.reposts.findMany({
+      where: {
+        user: {
+          username: params.username,
+        },
+      },
+      include: {
+        thread: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const results = [];
+    for await (const repost of reposts) {
+      const thread = repost.thread;
+      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(thread.id);
+      const reposted = await hasRepostedThread(thread.id, session?.user.id);
+      const repostsCount = await getRepostsCount(thread.id);
+      results.push({
+        ...thread,
+        isSaved: isSaved,
+        isLiked,
+        likesCount,
+        reposted,
+        repostsCount,
+      });
+    }
+    return results;
+  },
+);
