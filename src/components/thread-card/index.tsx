@@ -51,7 +51,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <Like threadId={thread.id} isLiked={thread.isLiked} />
             <Reply />
             <Repost threadId={thread.id} reposted={thread.reposted} />
-            <Share />
+            <Share username={thread.user.username} threadId={thread.id} />
           </div>
           <div class="mt-2">
             {thread.likesCount ? <LikesModal thread={thread} /> : null}
