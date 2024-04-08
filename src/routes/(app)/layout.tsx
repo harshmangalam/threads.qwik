@@ -31,7 +31,7 @@ export default component$(() => {
   return (
     <div>
       <Navbar />
-      <main class="mx-auto mb-20 max-w-2xl px-4 py-4">
+      <main class="mx-auto min-h-screen max-w-2xl px-4 py-20">
         <Slot />
       </main>
       <BottomNavigation />

@@ -5,7 +5,7 @@ import { NavDropdown } from "./nav-dropdown";
 
 export const Navbar = component$(() => {
   return (
-    <header class="sticky top-0 z-50 bg-base-100">
+    <header class="fixed left-0 right-0 top-0 z-50 bg-base-100">
       <nav class="container mx-auto h-16 w-full px-6">
         <div class="grid h-full grid-cols-12">
           <section class="col-span-3 flex items-center">
