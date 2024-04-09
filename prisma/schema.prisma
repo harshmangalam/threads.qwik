@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -91,16 +85,20 @@ model VerificationToken {
 }
 
 model Thread {
-  id           String           @id @default(cuid())
-  text         String?          @db.VarChar(500)
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  replyPrivacy ReplyPrivacyType @default(ANYONE)
-  savedByUsers SavedThreads[]   @relation(name: "savedThreads")
-  likes        LikedThreads[]   @relation(name: "threadsLikes")
-  reposts      Reposts[]        @relation(name: "repostThreads")
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id            String           @id @default(cuid())
+  text          String?          @db.VarChar(500)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  replyPrivacy  ReplyPrivacyType @default(ANYONE)
+  savedByUsers  SavedThreads[]   @relation(name: "savedThreads")
+  likes         LikedThreads[]   @relation(name: "threadsLikes")
+  reposts       Reposts[]        @relation(name: "repostThreads")
+  latestReplyId String?
+  latestReply   Thread?          @relation("ThreadReplies", fields: [latestReplyId], references: [id])
+  replies       Thread[]         @relation("ThreadReplies")
+  isReply       Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 }
 
 model Follows {

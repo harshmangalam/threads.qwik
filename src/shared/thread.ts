@@ -124,23 +124,53 @@ async function hasRepostedThread(threadId?: string, userId?: string) {
 
 // eslint-disable-next-line qwik/loader-location
 export const useCreateThread = routeAction$(
-  async (form, { sharedMap, redirect, url }) => {
+  async (
+    { replyPrivacy, text, threadId },
+    { sharedMap, redirect, url, error },
+  ) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, `/login`);
     }
-    await prisma.thread.create({
-      data: {
-        ...form,
-        userId: session.user.id,
-      },
-    });
+    try {
+      const createdThread = await prisma.thread.create({
+        data: {
+          replyPrivacy,
+          text,
+          userId: session.user.id,
+          isReply: !!threadId,
+        },
+      });
 
-    throw redirect(302, url.href);
+      if (threadId) {
+        await prisma.thread.update({
+          where: {
+            id: threadId,
+          },
+          data: {
+            latestReplyId: createdThread.id,
+            replies: {
+              connect: {
+                id: threadId,
+              },
+            },
+          },
+        });
+      }
+
+      throw redirect(302, url.href);
+    } catch (err: any) {
+      if (err.message) {
+        console.log("Error create thread reply", err.message);
+        throw error(500, "Internal server error");
+      }
+      throw err;
+    }
   },
   zod$((z) => ({
     text: z.string(),
     replyPrivacy: z.enum(["ANYONE", "FOLLOWING", "MENTION"]),
+    threadId: z.string().optional(),
   })),
 );
 
