@@ -224,6 +224,9 @@ export const useUpdateReplyPrivacy = routeAction$(
 export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   const session: Session | null = sharedMap.get("session");
   const threads = await prisma.thread.findMany({
+    where: {
+      isReply: false,
+    },
     include: {
       user: {
         select: {
@@ -298,6 +301,7 @@ export const useGetProfileThreds = routeLoader$(
         user: {
           username: params.username,
         },
+        isReply: false,
       },
       include: {
         user: {
