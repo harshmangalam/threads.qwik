@@ -7,7 +7,7 @@ type LikeUserProps = {
   user: Pick<UserSuggestionType, "name" | "username" | "image">;
   likedAt: Date;
 };
-export const LikeUser = component$(({ user, likedAt }: LikeUserProps) => {
+export const User = component$(({ user, likedAt }: LikeUserProps) => {
   return (
     <article class="flex items-center gap-3">
       <div class="relative">

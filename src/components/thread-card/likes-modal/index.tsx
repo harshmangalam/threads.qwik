@@ -3,7 +3,7 @@ import { getThreadsLikes } from "~/routes/(app)/layout";
 import type { ThreadType } from "~/shared/thread";
 import { Avatar } from "~/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { LikeUser } from "./like-user";
+import { User } from "./user";
 
 export const LikesModal = component$(({ thread }: { thread: ThreadType }) => {
   const modal = useSignal<HTMLDialogElement>();
@@ -15,7 +15,6 @@ export const LikesModal = component$(({ thread }: { thread: ThreadType }) => {
           modal.value?.showModal();
           likes.value = await getThreadsLikes(thread.id);
         }}
-        class="opacity-60"
       >
         {thread.likesCount} like
       </button>
@@ -42,7 +41,7 @@ export const LikesModal = component$(({ thread }: { thread: ThreadType }) => {
           <ul class="mt-4 flex flex-col gap-2">
             {likes.value?.map((like) => (
               <li key={like.userId}>
-                <LikeUser likedAt={like.likedAt} user={like.user} />
+                <User likedAt={like.likedAt} user={like.user} />
               </li>
             ))}
           </ul>

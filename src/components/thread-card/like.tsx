@@ -2,9 +2,9 @@ import { component$ } from "@builder.io/qwik";
 import LikeIcon from "~/assets/icons/heart.svg?jsx";
 import { useLikeThread } from "~/routes/(app)/layout";
 export const Like = component$(
-  ({ isLiked, threadId }: { threadId: string; isLiked: boolean }) => {
+  ({ liked, threadId }: { threadId: string; liked: boolean }) => {
     const likeThread = useLikeThread();
-    const likeClass = isLiked ? "fill-error text-error" : "fill-none";
+    const likeClass = liked ? "fill-error text-error" : "fill-none";
     return (
       <button
         disabled={likeThread.isRunning}

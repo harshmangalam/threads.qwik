@@ -9,14 +9,15 @@ import type { Thread, User } from "@prisma/client";
 import { prisma } from "~/utils/prisma";
 
 export type ThreadType = Thread & {
-  isSaved: boolean;
-  isLiked: boolean;
+  saved: boolean;
+  liked: boolean;
   reposted: boolean;
   likesCount: number;
   repostsCount: number;
+  repliesCount?: number;
   user: Pick<User, "id" | "username" | "image">;
 };
-async function saveThread(threadId: string, userId: string) {
+export async function saveThread(threadId: string, userId: string) {
   return prisma.savedThreads.create({
     data: {
       threadId,
@@ -25,7 +26,7 @@ async function saveThread(threadId: string, userId: string) {
   });
 }
 
-async function unSaveThread(threadId: string, userId: string) {
+export async function unSaveThread(threadId: string, userId: string) {
   return prisma.savedThreads.delete({
     where: {
       userId_threadId: {
@@ -36,7 +37,7 @@ async function unSaveThread(threadId: string, userId: string) {
   });
 }
 
-async function isSavedThread(threadId?: string, userId?: string) {
+export async function isSavedThread(threadId?: string, userId?: string) {
   const saved = await prisma.savedThreads.count({
     where: {
       threadId,
@@ -46,7 +47,7 @@ async function isSavedThread(threadId?: string, userId?: string) {
   return !!saved;
 }
 
-async function likeThread(threadId: string, userId: string) {
+export async function likeThread(threadId: string, userId: string) {
   return prisma.likedThreads.create({
     data: {
       threadId,
@@ -55,7 +56,7 @@ async function likeThread(threadId: string, userId: string) {
   });
 }
 
-async function unlikeThread(threadId: string, userId: string) {
+export async function unlikeThread(threadId: string, userId: string) {
   return prisma.likedThreads.delete({
     where: {
       userId_threadId: {
@@ -66,7 +67,7 @@ async function unlikeThread(threadId: string, userId: string) {
   });
 }
 
-async function isLikedThread(threadId: string, userId?: string) {
+export async function isLikedThread(threadId: string, userId?: string) {
   const count = await prisma.likedThreads.count({
     where: {
       threadId,
@@ -77,7 +78,7 @@ async function isLikedThread(threadId: string, userId?: string) {
   return Boolean(count);
 }
 
-async function getThreadLikesCount(threadId: string) {
+export async function getThreadLikesCount(threadId: string) {
   return prisma.likedThreads.count({
     where: {
       threadId,
@@ -85,7 +86,7 @@ async function getThreadLikesCount(threadId: string) {
   });
 }
 
-async function repostThread(threadId: string, userId: string) {
+export async function repostThread(threadId: string, userId: string) {
   return prisma.reposts.create({
     data: {
       threadId,
@@ -94,7 +95,7 @@ async function repostThread(threadId: string, userId: string) {
   });
 }
 
-async function undoRepost(threadId: string, userId: string) {
+export async function undoRepost(threadId: string, userId: string) {
   return prisma.reposts.delete({
     where: {
       userId_threadId: {
@@ -105,14 +106,14 @@ async function undoRepost(threadId: string, userId: string) {
   });
 }
 
-async function getRepostsCount(threadId: string) {
+export async function getRepostsCount(threadId: string) {
   return prisma.reposts.count({
     where: {
       threadId,
     },
   });
 }
-async function hasRepostedThread(threadId?: string, userId?: string) {
+export async function hasRepostedThread(threadId?: string, userId?: string) {
   const reposted = await prisma.reposts.count({
     where: {
       threadId,
@@ -120,6 +121,15 @@ async function hasRepostedThread(threadId?: string, userId?: string) {
     },
   });
   return !!reposted;
+}
+
+export async function getRepliesCount(threadId: string) {
+  return prisma.thread.count({
+    where: {
+      parentThreadId: threadId,
+      isReply: true,
+    },
+  });
 }
 
 // eslint-disable-next-line qwik/loader-location
@@ -133,13 +143,13 @@ export const useCreateThread = routeAction$(
       throw redirect(302, `/login`);
     }
     try {
-      await prisma.thread.create({
+      const replyThread = await prisma.thread.create({
         data: {
           replyPrivacy,
           text,
           userId: session.user.id,
           isReply: !!threadId,
-          rootThreadId: threadId,
+          parentThreadId: threadId,
         },
       });
 
@@ -151,14 +161,14 @@ export const useCreateThread = routeAction$(
           data: {
             replies: {
               connect: {
-                id: threadId,
+                id: replyThread.id,
               },
             },
           },
         });
       }
 
-      throw redirect(302, url.href);
+      throw redirect(302, url.pathname);
     } catch (err: any) {
       if (err.message) {
         console.log("Error create thread reply", err.message);
@@ -240,7 +250,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   const results = [];
   for await (const thread of threads) {
     const isSaved = await isSavedThread(thread.id, session?.user.id);
-    const isLiked = await isLikedThread(thread.id, session?.user.id);
+    const liked = await isLikedThread(thread.id, session?.user.id);
     const reposted = await hasRepostedThread(thread.id, session?.user.id);
     const repostsCount = await getRepostsCount(thread.id);
     const likesCount = await getThreadLikesCount(thread.id);
@@ -248,7 +258,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
     results.push({
       ...thread,
       isSaved,
-      isLiked,
+      liked,
       likesCount,
       reposted,
       repostsCount,
@@ -316,14 +326,14 @@ export const useGetProfileThreds = routeLoader$(
     const results = [];
     for await (const thread of threads) {
       const isSaved = await isSavedThread(thread.id, session?.user.id);
-      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
       results.push({
         ...thread,
         isSaved: isSaved,
-        isLiked,
+        liked,
         likesCount,
         reposted,
         repostsCount,
@@ -356,15 +366,15 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results: ThreadType[] = [];
   for await (const data of savedThreads) {
-    const isLiked = await isLikedThread(data.threadId, session?.user.id);
+    const liked = await isLikedThread(data.threadId, session?.user.id);
     const likesCount = await getThreadLikesCount(data.threadId);
     const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
     const repostsCount = await getRepostsCount(data.thread.id);
 
     results.push({
       ...data.thread,
-      isSaved: true,
-      isLiked,
+      saved: true,
+      liked,
       likesCount,
       reposted,
       repostsCount,
@@ -493,14 +503,14 @@ export const useGetRepostedThreads = routeLoader$(
     for await (const repost of reposts) {
       const thread = repost.thread;
       const isSaved = await isSavedThread(thread.id, session?.user.id);
-      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
       results.push({
         ...thread,
         isSaved: isSaved,
-        isLiked,
+        liked,
         likesCount,
         reposted,
         repostsCount,
@@ -534,14 +544,14 @@ export const useGetProfileReplies = routeLoader$(
     const results = [];
     for await (const thread of threads) {
       const isSaved = await isSavedThread(thread.id, session?.user.id);
-      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
       results.push({
         ...thread,
         isSaved: isSaved,
-        isLiked,
+        liked,
         likesCount,
         reposted,
         repostsCount,

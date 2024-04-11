@@ -85,20 +85,20 @@ model VerificationToken {
 }
 
 model Thread {
-  id           String           @id @default(cuid())
-  text         String?          @db.VarChar(500)
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  replyPrivacy ReplyPrivacyType @default(ANYONE)
-  savedByUsers SavedThreads[]   @relation(name: "savedThreads")
-  likes        LikedThreads[]   @relation(name: "threadsLikes")
-  reposts      Reposts[]        @relation(name: "repostThreads")
-  rootThreadId String?
-  rootThread   Thread?          @relation("ThreadReplies", fields: [rootThreadId], references: [id])
-  replies      Thread[]         @relation("ThreadReplies")
-  isReply      Boolean          @default(false)
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id             String           @id @default(cuid())
+  text           String?          @db.VarChar(500)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  replyPrivacy   ReplyPrivacyType @default(ANYONE)
+  savedByUsers   SavedThreads[]   @relation(name: "savedThreads")
+  likes          LikedThreads[]   @relation(name: "threadsLikes")
+  reposts        Reposts[]        @relation(name: "repostThreads")
+  parentThreadId String?
+  parentThread   Thread?          @relation("ThreadReplies", fields: [parentThreadId], references: [id])
+  replies        Thread[]         @relation("ThreadReplies")
+  isReply        Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Follows {

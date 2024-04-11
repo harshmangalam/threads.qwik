@@ -1,14 +1,157 @@
+import type { Session } from "@auth/core/types";
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { Link, routeLoader$ } from "@builder.io/qwik-city";
+import { formatDistanceToNowStrict } from "date-fns";
+import { ThreadCard } from "~/components/thread-card";
+import { Like } from "~/components/thread-card/like";
+import { LikesModal } from "~/components/thread-card/likes-modal";
+import { Reply } from "~/components/thread-card/reply";
+import { Repost } from "~/components/thread-card/repost";
+import { Share } from "~/components/thread-card/share";
+import { Avatar } from "~/components/ui/avatar";
+import {
+  type ThreadType,
+  getRepliesCount,
+  getRepostsCount,
+  getThreadLikesCount,
+  hasRepostedThread,
+  isLikedThread,
+  isSavedThread,
+} from "~/shared/thread";
+import { prisma } from "~/utils/prisma";
 
-export const useGetPost = routeLoader$(({ params }) => {
-  const threadId = params.threadId;
-  // const isSaved = await isSavedThread(thread.id, session?.user.id);
-  // const isLiked = await isLikedThread(thread.id, session?.user.id);
-  // const likesCount = await getThreadLikesCount(thread.id);
-  // const reposted = await hasRepostedThread(thread.id, session?.user.id);
-  // const repostsCount = await getRepostsCount(thread.id);
-});
+export const useGetThread = routeLoader$(
+  async ({ params, sharedMap, error }) => {
+    const session: Session | null = sharedMap.get("session");
+    const threadId = params.threadId;
+    const saved = await isSavedThread(threadId, session?.user.id);
+    const liked = await isLikedThread(threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(threadId);
+    const reposted = await hasRepostedThread(threadId, session?.user.id);
+    const repostsCount = await getRepostsCount(threadId);
+    const repliesCount = await getRepliesCount(threadId);
+
+    const thread = await prisma.thread.findUnique({
+      where: {
+        id: threadId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    if (!thread) {
+      throw error(404, "Thread not found");
+    }
+
+    const data = {
+      ...thread,
+      saved,
+      liked,
+      likesCount,
+      reposted,
+      repostsCount,
+      repliesCount,
+    } satisfies ThreadType;
+
+    return data;
+  },
+);
+export const useGetThreadReplies = routeLoader$(
+  async ({ sharedMap, params }) => {
+    const session: Session | null = sharedMap.get("session");
+    const threadId = params.threadId;
+
+    const replies = await prisma.thread.findMany({
+      where: {
+        isReply: true,
+        parentThreadId: threadId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+    });
+    const data: ThreadType[] = [];
+
+    for await (const thread of replies) {
+      const saved = await isSavedThread(thread.id, session?.user.id);
+      const liked = await isLikedThread(thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(thread.id);
+      const reposted = await hasRepostedThread(thread.id, session?.user.id);
+      const repostsCount = await getRepostsCount(thread.id);
+      const repliesCount = await getRepliesCount(thread.id);
+
+      data.push({
+        ...thread,
+        saved,
+        liked,
+        likesCount,
+        reposted,
+        repostsCount,
+        repliesCount,
+      });
+    }
+
+    return data;
+  },
+);
 export default component$(() => {
-  return <div>Thread id</div>;
+  const thread = useGetThread();
+  const replies = useGetThreadReplies();
+
+  return (
+    <div class="flex flex-col gap-4">
+      <header class="flex items-center gap-3">
+        <Avatar
+          src={thread.value.user.image}
+          size="md"
+          rounded="rounded-full"
+        />
+        <Link
+          href={`/${thread.value.user.username}`}
+          class="font-medium hover:underline"
+        >
+          {thread.value.user.username}
+        </Link>
+        <div class="text-sm opacity-50">
+          {formatDistanceToNowStrict(thread.value.createdAt)}
+        </div>
+      </header>
+      <p>{thread.value.text}</p>
+      <div class="flex items-center gap-3">
+        <Like liked={thread.value.liked} threadId={thread.value.id} />
+        <Reply thread={thread.value} />
+        <Repost threadId={thread.value.id} reposted={thread.value.reposted} />
+        <Share
+          username={thread.value.user.username}
+          threadId={thread.value.id}
+        />
+      </div>
+      <div class="flex items-center gap-2 opacity-50">
+        <div>{thread.value.repliesCount} replies</div>
+        <span>·</span>
+        <LikesModal thread={thread.value} />
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid grid-cols-1 gap-4">
+        {replies.value.map((reply) => (
+          <ThreadCard key={reply.id} thread={reply} />
+        ))}
+      </div>
+    </div>
+  );
 });
