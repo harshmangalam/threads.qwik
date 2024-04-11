@@ -55,20 +55,29 @@ pnpm run dev
   - Like/Unlike
   - Delete
   - Save/Unsave
+  - Repost
+  - Replies
 
 - Home
+
   - Threads feed
   - User suggestions
+
 - Profile
 
   - Follow/Unfollow
   - Edit profile
-  - Profile threads feed
+  - Threads feed
+  - Replies
+  - Reposts
 
 - Saved threads
-
 - Search Users
-
 - Create Thread
+
   - Text
   - Thread reply privacy
+
+- Mobile resposive
+  - Bottom nav
+  - Navbar
