@@ -11,6 +11,7 @@ export const UserLikes = component$(
     return (
       <div>
         <button
+          class="opacity-50"
           onClick$={async () => {
             modal.value?.showModal();
             likes.value = await getThreadsLikes(thread.id);

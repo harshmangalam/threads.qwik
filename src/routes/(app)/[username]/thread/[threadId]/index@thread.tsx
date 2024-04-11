@@ -139,10 +139,10 @@ export default component$(() => {
           threadId={thread.value.id}
         />
       </div>
-      <div class="flex items-center gap-2 opacity-50">
-        <div>{thread.value.repliesCount} replies</div>
-        <span>·</span>
-        <UserLikes thread={thread.value} />
+      <div class="flex items-center gap-2">
+        <div class="opacity-50">{thread.value.repliesCount} replies</div>
+        <span class="opacity-50">·</span>
+        <UserLikes thread={thread.value} likesCount={thread.value.likesCount} />
       </div>
 
       <div class="divider"></div>
