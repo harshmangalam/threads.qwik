@@ -4,10 +4,10 @@ import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ThreadCard } from "~/components/thread-card";
 import { Like } from "~/components/thread-card/like";
-import { LikesModal } from "~/components/thread-card/likes-modal";
 import { Reply } from "~/components/thread-card/reply";
 import { Repost } from "~/components/thread-card/repost";
 import { Share } from "~/components/thread-card/share";
+import { UserLikes } from "~/components/thread-card/user-likes";
 import { Avatar } from "~/components/ui/avatar";
 import {
   type ThreadType,
@@ -142,7 +142,7 @@ export default component$(() => {
       <div class="flex items-center gap-2 opacity-50">
         <div>{thread.value.repliesCount} replies</div>
         <span>·</span>
-        <LikesModal thread={thread.value} />
+        <UserLikes thread={thread.value} />
       </div>
 
       <div class="divider"></div>

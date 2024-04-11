@@ -6,8 +6,8 @@ import { Repost } from "./repost";
 import { Share } from "./share";
 import { formatDistanceToNow } from "date-fns";
 import { type ThreadType } from "~/shared/thread";
-import { LikesModal } from "./likes-modal";
 import { Link } from "@builder.io/qwik-city";
+import { UserLikes } from "./user-likes";
 
 type ThreadCardProps = {
   thread: ThreadType;
@@ -57,7 +57,9 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <Share username={thread.user.username} threadId={thread.id} />
           </div>
           <div class="mt-2">
-            {thread.likesCount ? <LikesModal thread={thread} /> : null}
+            {thread.likesCount ? (
+              <UserLikes likesCount={thread.likesCount} thread={thread} />
+            ) : null}
           </div>
         </div>
       </div>
