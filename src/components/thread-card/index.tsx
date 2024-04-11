@@ -7,6 +7,7 @@ import { Share } from "./share";
 import { formatDistanceToNow } from "date-fns";
 import { type ThreadType } from "~/shared/thread";
 import { LikesModal } from "./likes-modal";
+import { Link } from "@builder.io/qwik-city";
 
 type ThreadCardProps = {
   thread: ThreadType;
@@ -15,7 +16,7 @@ type ThreadCardProps = {
 export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
   return (
     <article>
-      <header class="flex gap-3">
+      <div class="flex gap-3">
         <div class="mt-2 flex-none">
           {thread.user.image && (
             <div class="avatar">
@@ -35,7 +36,9 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
               <ActionsDropdown thread={thread} />
             </div>
           </div>
-          <p>{thread.text}</p>
+          <Link href={`/${thread.user.username}/thread/${thread.id}`}>
+            <p>{thread.text}</p>
+          </Link>
 
           {/* <picture class="mt-4">
             <img
@@ -57,7 +60,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             {thread.likesCount ? <LikesModal thread={thread} /> : null}
           </div>
         </div>
-      </header>
+      </div>
     </article>
   );
 });

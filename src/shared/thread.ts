@@ -133,12 +133,13 @@ export const useCreateThread = routeAction$(
       throw redirect(302, `/login`);
     }
     try {
-      const createdThread = await prisma.thread.create({
+      await prisma.thread.create({
         data: {
           replyPrivacy,
           text,
           userId: session.user.id,
           isReply: !!threadId,
+          rootThreadId: threadId,
         },
       });
 
@@ -148,7 +149,6 @@ export const useCreateThread = routeAction$(
             id: threadId,
           },
           data: {
-            latestReplyId: createdThread.id,
             replies: {
               connect: {
                 id: threadId,
@@ -492,6 +492,47 @@ export const useGetRepostedThreads = routeLoader$(
     const results = [];
     for await (const repost of reposts) {
       const thread = repost.thread;
+      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const isLiked = await isLikedThread(thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(thread.id);
+      const reposted = await hasRepostedThread(thread.id, session?.user.id);
+      const repostsCount = await getRepostsCount(thread.id);
+      results.push({
+        ...thread,
+        isSaved: isSaved,
+        isLiked,
+        likesCount,
+        reposted,
+        repostsCount,
+      });
+    }
+    return results;
+  },
+);
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetProfileReplies = routeLoader$(
+  async ({ params, sharedMap }) => {
+    const session: Session | null = sharedMap.get("session");
+    const threads = await prisma.thread.findMany({
+      where: {
+        user: {
+          username: params.username,
+        },
+        isReply: true,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+    });
+    const results = [];
+    for await (const thread of threads) {
       const isSaved = await isSavedThread(thread.id, session?.user.id);
       const isLiked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
