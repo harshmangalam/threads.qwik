@@ -1,8 +1,8 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { type ThreadType, getThreadsLikes } from "~/shared/thread";
 import { Avatar } from "~/components/ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import { User } from "./user";
+import { formatDistanceToNowStrict } from "date-fns";
+import { UserCard } from "./user-card";
 
 export const UserLikes = component$(
   ({ thread, likesCount }: { thread: ThreadType; likesCount: number }) => {
@@ -34,7 +34,7 @@ export const UserLikes = component$(
                   <h4 class="font-medium">{thread.user.username}</h4>
                 </div>
                 <p class="text-sm opacity-60">
-                  {formatDistanceToNow(thread.createdAt)}
+                  {formatDistanceToNowStrict(thread.createdAt)}
                 </p>
               </header>
               <p class="mt-3 text-sm">{thread.text}</p>
@@ -42,7 +42,11 @@ export const UserLikes = component$(
             <ul class="mt-4 flex flex-col gap-2">
               {likes.value?.map((like) => (
                 <li key={like.userId}>
-                  <User likedAt={like.likedAt} user={like.user} />
+                  <UserCard
+                    activityType="like"
+                    date={like.likedAt}
+                    user={like.user}
+                  />
                 </li>
               ))}
             </ul>

@@ -1,23 +1,23 @@
 import { component$, useSignal } from "@builder.io/qwik";
-import { type ThreadType, getThreadsLikes } from "~/shared/thread";
+import { type ThreadType, getThreadsReposts } from "~/shared/thread";
 import { Avatar } from "~/components/ui/avatar";
-import { formatDistanceToNow } from "date-fns";
-import { User } from "./user";
+import { formatDistanceToNowStrict } from "date-fns";
+import { UserCard } from "./user-card";
 
-export const UserLikes = component$(
+export const UserReposts = component$(
   ({ thread, repostCount }: { thread: ThreadType; repostCount: number }) => {
     const modal = useSignal<HTMLDialogElement>();
-    const likes = useSignal<Awaited<ReturnType<typeof getThreadsLikes>>>();
+    const reposts = useSignal<Awaited<ReturnType<typeof getThreadsReposts>>>();
     return (
       <div>
         <button
           class="opacity-50"
           onClick$={async () => {
             modal.value?.showModal();
-            likes.value = await getThreadsLikes(thread.id);
+            reposts.value = await getThreadsReposts(thread.id);
           }}
         >
-          {repostCount} likes
+          {repostCount} reposts
         </button>
 
         <dialog ref={modal} class="modal">
@@ -34,15 +34,19 @@ export const UserLikes = component$(
                   <h4 class="font-medium">{thread.user.username}</h4>
                 </div>
                 <p class="text-sm opacity-60">
-                  {formatDistanceToNow(thread.createdAt)}
+                  {formatDistanceToNowStrict(thread.createdAt)}
                 </p>
               </header>
               <p class="mt-3 text-sm">{thread.text}</p>
             </article>
             <ul class="mt-4 flex flex-col gap-2">
-              {likes.value?.map((like) => (
-                <li key={like.userId}>
-                  <User likedAt={like.likedAt} user={like.user} />
+              {reposts.value?.map((repost) => (
+                <li key={repost.userId}>
+                  <UserCard
+                    activityType="repost"
+                    date={repost.repostedAt}
+                    user={repost.user}
+                  />
                 </li>
               ))}
             </ul>

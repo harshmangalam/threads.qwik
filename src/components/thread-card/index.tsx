@@ -4,10 +4,11 @@ import { Like } from "./like";
 import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { type ThreadType } from "~/shared/thread";
 import { Link } from "@builder.io/qwik-city";
-import { UserLikes } from "./user-likes";
+import { UserLikes } from "./user-activities/user-likes";
+import { UserReposts } from "./user-activities/user-reposts";
 
 type ThreadCardProps = {
   thread: ThreadType;
@@ -31,7 +32,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <h3 class="font-medium">{thread.user.username}</h3>
             <div class="flex items-center gap-3">
               <div class="text-sm opacity-50">
-                {formatDistanceToNow(thread.createdAt)}
+                {formatDistanceToNowStrict(thread.createdAt)}
               </div>
               <ActionsDropdown thread={thread} />
             </div>
@@ -72,6 +73,13 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
 
             {thread.likesCount ? (
               <UserLikes likesCount={thread.likesCount} thread={thread} />
+            ) : null}
+            {(thread.likesCount || thread.repliesCount) &&
+            thread.repostsCount ? (
+              <span class="opacity-50">·</span>
+            ) : null}
+            {thread.repostsCount ? (
+              <UserReposts repostCount={thread.repostsCount} thread={thread} />
             ) : null}
           </div>
         </div>

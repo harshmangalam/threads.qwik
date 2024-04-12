@@ -7,7 +7,8 @@ import { Like } from "~/components/thread-card/like";
 import { Reply } from "~/components/thread-card/reply";
 import { Repost } from "~/components/thread-card/repost";
 import { Share } from "~/components/thread-card/share";
-import { UserLikes } from "~/components/thread-card/user-likes";
+import { UserLikes } from "~/components/thread-card/user-activities/user-likes";
+import { UserReposts } from "~/components/thread-card/user-activities/user-reposts";
 import { Avatar } from "~/components/ui/avatar";
 import {
   type ThreadType,
@@ -139,10 +140,36 @@ export default component$(() => {
           threadId={thread.value.id}
         />
       </div>
-      <div class="flex items-center gap-2">
-        <div class="opacity-50">{thread.value.repliesCount} replies</div>
-        <span class="opacity-50">·</span>
-        <UserLikes thread={thread.value} likesCount={thread.value.likesCount} />
+      <div class="mt-2 flex items-center gap-2">
+        {thread.value.repliesCount ? (
+          <Link
+            href={`/${thread.value.user.username}/thread/${thread.value.id}`}
+            class="opacity-50"
+          >
+            {thread.value.repliesCount} replies
+          </Link>
+        ) : null}
+
+        {thread.value.repliesCount && thread.value.likesCount ? (
+          <span class="opacity-50">·</span>
+        ) : null}
+
+        {thread.value.likesCount ? (
+          <UserLikes
+            likesCount={thread.value.likesCount}
+            thread={thread.value}
+          />
+        ) : null}
+        {(thread.value.likesCount || thread.value.repliesCount) &&
+        thread.value.repostsCount ? (
+          <span class="opacity-50">·</span>
+        ) : null}
+        {thread.value.repostsCount ? (
+          <UserReposts
+            repostCount={thread.value.repostsCount}
+            thread={thread.value}
+          />
+        ) : null}
       </div>
 
       <div class="divider"></div>

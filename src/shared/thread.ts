@@ -461,7 +461,6 @@ export const useRepostThreads = routeAction$(
   })),
 );
 
-// eslint-disable-next-line qwik/loader-location
 export const getThreadsLikes = server$(async (threadId: string) => {
   const likes = await prisma.likedThreads.findMany({
     where: {
@@ -480,6 +479,26 @@ export const getThreadsLikes = server$(async (threadId: string) => {
   });
 
   return likes;
+});
+
+export const getThreadsReposts = server$(async (threadId: string) => {
+  const reposts = await prisma.reposts.findMany({
+    where: {
+      threadId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return reposts;
 });
 
 // eslint-disable-next-line qwik/loader-location
