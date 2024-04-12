@@ -254,6 +254,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
     const reposted = await hasRepostedThread(thread.id, session?.user.id);
     const repostsCount = await getRepostsCount(thread.id);
     const likesCount = await getThreadLikesCount(thread.id);
+    const repliesCount = await getRepliesCount(thread.id);
 
     results.push({
       ...thread,
@@ -262,6 +263,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
       likesCount,
       reposted,
       repostsCount,
+      repliesCount,
     });
   }
   return results;
@@ -330,6 +332,8 @@ export const useGetProfileThreds = routeLoader$(
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
+      const repliesCount = await getRepliesCount(thread.id);
+
       results.push({
         ...thread,
         isSaved: isSaved,
@@ -337,6 +341,7 @@ export const useGetProfileThreds = routeLoader$(
         likesCount,
         reposted,
         repostsCount,
+        repliesCount,
       });
     }
     return results;
@@ -370,6 +375,7 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
     const likesCount = await getThreadLikesCount(data.threadId);
     const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
     const repostsCount = await getRepostsCount(data.thread.id);
+    const repliesCount = await getRepliesCount(data.thread.id);
 
     results.push({
       ...data.thread,
@@ -378,6 +384,7 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
       likesCount,
       reposted,
       repostsCount,
+      repliesCount,
     });
   }
   return results;
@@ -548,6 +555,8 @@ export const useGetProfileReplies = routeLoader$(
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
+      const repliesCount = await getRepliesCount(thread.id);
+
       results.push({
         ...thread,
         isSaved: isSaved,
@@ -555,6 +564,7 @@ export const useGetProfileReplies = routeLoader$(
         likesCount,
         reposted,
         repostsCount,
+        repliesCount,
       });
     }
     return results;

@@ -56,7 +56,18 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <Repost threadId={thread.id} reposted={thread.reposted} />
             <Share username={thread.user.username} threadId={thread.id} />
           </div>
-          <div class="mt-2">
+          <div class="mt-2 flex items-center gap-2">
+            {thread.repliesCount ? (
+              <Link
+                href={`/${thread.user.username}/thread/${thread.id}`}
+                class="opacity-50"
+              >
+                {thread.repliesCount} replies
+              </Link>
+            ) : null}
+
+            {thread.repliesCount && thread.likesCount ? <span>·</span> : null}
+
             {thread.likesCount ? (
               <UserLikes likesCount={thread.likesCount} thread={thread} />
             ) : null}
