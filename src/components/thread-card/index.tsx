@@ -66,7 +66,9 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
               </Link>
             ) : null}
 
-            {thread.repliesCount && thread.likesCount ? <span>·</span> : null}
+            {thread.repliesCount && thread.likesCount ? (
+              <span class="opacity-50">·</span>
+            ) : null}
 
             {thread.likesCount ? (
               <UserLikes likesCount={thread.likesCount} thread={thread} />
