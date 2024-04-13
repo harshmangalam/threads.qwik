@@ -621,3 +621,45 @@ export const useGetProfileReplies = routeLoader$(
     return results;
   },
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetLikedThreads = routeLoader$(async ({ sharedMap }) => {
+  const session: Session | null = sharedMap.get("session");
+  const savedThreads = await prisma.likedThreads.findMany({
+    where: {
+      userId: session?.user.id,
+    },
+    include: {
+      thread: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  const results: ThreadType[] = [];
+  for await (const data of savedThreads) {
+    const liked = await isLikedThread(data.threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(data.threadId);
+    const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
+    const repostsCount = await getRepostsCount(data.thread.id);
+    const repliesCount = await getRepliesCount(data.thread.id);
+
+    results.push({
+      ...data.thread,
+      saved: true,
+      liked,
+      likesCount,
+      reposted,
+      repostsCount,
+      repliesCount,
+    });
+  }
+  return results;
+});

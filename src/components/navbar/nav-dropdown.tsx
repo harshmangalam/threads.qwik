@@ -28,7 +28,7 @@ export const NavDropdown = component$(() => {
         <div class="divider m-0"></div>
         <NavLink href="/saved/" label="Saved" />
         <div class="divider m-0"></div>
-        <NavLink href="/" label="Your likes" />
+        <NavLink href="/liked" label="Your likes" />
         <div class="divider m-0"></div>
         <li>
           <Logout />
