@@ -10,14 +10,14 @@ export { useGetUsers } from "~/shared/user";
 export { useGetThreads } from "~/shared/thread";
 
 export default component$(() => {
-  const thredas = useGetThreads();
+  const threads = useGetThreads();
   const users = useGetUsers();
 
   return (
     <div>
       <UserSuggestions users={users.value} />
       <div class="mt-4 grid grid-cols-1 gap-4">
-        {thredas.value.map((thread) => (
+        {threads.value.map((thread) => (
           <ThreadCard key={thread.id} thread={thread} />
         ))}
       </div>

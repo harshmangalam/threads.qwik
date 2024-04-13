@@ -16,6 +16,7 @@ export type ThreadType = Thread & {
   repostsCount: number;
   repliesCount?: number;
   user: Pick<User, "id" | "username" | "image">;
+  parentThread?: any;
 };
 export async function saveThread(threadId: string, userId: string) {
   return prisma.savedThreads.create({
@@ -67,7 +68,7 @@ export async function unlikeThread(threadId: string, userId: string) {
   });
 }
 
-export async function isLikedThread(threadId: string, userId?: string) {
+export async function isLikedThread(threadId?: string, userId?: string) {
   const count = await prisma.likedThreads.count({
     where: {
       threadId,
@@ -78,7 +79,7 @@ export async function isLikedThread(threadId: string, userId?: string) {
   return Boolean(count);
 }
 
-export async function getThreadLikesCount(threadId: string) {
+export async function getThreadLikesCount(threadId?: string) {
   return prisma.likedThreads.count({
     where: {
       threadId,
@@ -106,7 +107,7 @@ export async function undoRepost(threadId: string, userId: string) {
   });
 }
 
-export async function getRepostsCount(threadId: string) {
+export async function getRepostsCount(threadId?: string) {
   return prisma.reposts.count({
     where: {
       threadId,
@@ -123,7 +124,7 @@ export async function hasRepostedThread(threadId?: string, userId?: string) {
   return !!reposted;
 }
 
-export async function getRepliesCount(threadId: string) {
+export async function getRepliesCount(threadId?: string) {
   return prisma.thread.count({
     where: {
       parentThreadId: threadId,
@@ -249,7 +250,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results = [];
   for await (const thread of threads) {
-    const isSaved = await isSavedThread(thread.id, session?.user.id);
+    const saved = await isSavedThread(thread.id, session?.user.id);
     const liked = await isLikedThread(thread.id, session?.user.id);
     const reposted = await hasRepostedThread(thread.id, session?.user.id);
     const repostsCount = await getRepostsCount(thread.id);
@@ -258,7 +259,7 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
 
     results.push({
       ...thread,
-      isSaved,
+      saved,
       liked,
       likesCount,
       reposted,
@@ -565,11 +566,22 @@ export const useGetProfileReplies = routeLoader$(
             image: true,
           },
         },
+        parentThread: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
     });
-    const results = [];
+    const results: ThreadType[] = [];
     for await (const thread of threads) {
-      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const saved = await isSavedThread(thread.id, session?.user.id);
       const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
@@ -578,12 +590,32 @@ export const useGetProfileReplies = routeLoader$(
 
       results.push({
         ...thread,
-        isSaved: isSaved,
+        saved,
         liked,
         likesCount,
         reposted,
         repostsCount,
         repliesCount,
+        parentThread: thread.parentThreadId
+          ? {
+              ...thread.parentThread,
+              saved: await isSavedThread(
+                thread.parentThreadId,
+                session?.user.id,
+              ),
+              liked: await isLikedThread(
+                thread.parentThreadId,
+                session?.user.id,
+              ),
+              likesCount: await getThreadLikesCount(thread.parentThreadId),
+              reposted: await hasRepostedThread(
+                thread.parentThreadId,
+                session?.user.id,
+              ),
+              repostsCount: await getRepostsCount(thread.parentThreadId),
+              repliesCount: await getRepliesCount(thread.parentThreadId),
+            }
+          : undefined,
       });
     }
     return results;

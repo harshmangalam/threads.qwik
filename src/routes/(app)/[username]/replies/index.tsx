@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { ThreadCard } from "~/components/thread-card";
+import { RepliesTimeline } from "~/components/thread-card/replies-timeline";
 import { useGetProfileReplies } from "~/shared/thread";
 export { useGetProfileReplies };
 export default component$(() => {
@@ -9,7 +9,7 @@ export default component$(() => {
       {threads.value.length ? (
         <div class="grid grid-cols-1 gap-4">
           {threads.value.map((thread) => (
-            <ThreadCard key={thread.id} thread={thread} />
+            <RepliesTimeline key={thread.id} thread={thread} />
           ))}
         </div>
       ) : (
