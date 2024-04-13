@@ -1,6 +1,5 @@
-import type { Session } from "@auth/core/types";
 import { component$ } from "@builder.io/qwik";
-import { Link, routeLoader$ } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ThreadCard } from "~/components/thread-card";
 import { Like } from "~/components/thread-card/like";
@@ -10,104 +9,9 @@ import { Share } from "~/components/thread-card/share";
 import { UserLikes } from "~/components/thread-card/user-activities/user-likes";
 import { UserReposts } from "~/components/thread-card/user-activities/user-reposts";
 import { Avatar } from "~/components/ui/avatar";
-import {
-  type ThreadType,
-  getRepliesCount,
-  getRepostsCount,
-  getThreadLikesCount,
-  hasRepostedThread,
-  isLikedThread,
-  isSavedThread,
-} from "~/shared/thread";
-import { prisma } from "~/utils/prisma";
+import { useGetThread, useGetThreadReplies } from "~/shared/thread";
+export { useGetThreadReplies, useGetThread };
 
-export const useGetThread = routeLoader$(
-  async ({ params, sharedMap, error }) => {
-    const session: Session | null = sharedMap.get("session");
-    const threadId = params.threadId;
-    const saved = await isSavedThread(threadId, session?.user.id);
-    const liked = await isLikedThread(threadId, session?.user.id);
-    const likesCount = await getThreadLikesCount(threadId);
-    const reposted = await hasRepostedThread(threadId, session?.user.id);
-    const repostsCount = await getRepostsCount(threadId);
-    const repliesCount = await getRepliesCount(threadId);
-
-    const thread = await prisma.thread.findUnique({
-      where: {
-        id: threadId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            image: true,
-          },
-        },
-      },
-    });
-
-    if (!thread) {
-      throw error(404, "Thread not found");
-    }
-
-    const data = {
-      ...thread,
-      saved,
-      liked,
-      likesCount,
-      reposted,
-      repostsCount,
-      repliesCount,
-    } satisfies ThreadType;
-
-    return data;
-  },
-);
-export const useGetThreadReplies = routeLoader$(
-  async ({ sharedMap, params }) => {
-    const session: Session | null = sharedMap.get("session");
-    const threadId = params.threadId;
-
-    const replies = await prisma.thread.findMany({
-      where: {
-        isReply: true,
-        parentThreadId: threadId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            image: true,
-          },
-        },
-      },
-    });
-    const data: ThreadType[] = [];
-
-    for await (const thread of replies) {
-      const saved = await isSavedThread(thread.id, session?.user.id);
-      const liked = await isLikedThread(thread.id, session?.user.id);
-      const likesCount = await getThreadLikesCount(thread.id);
-      const reposted = await hasRepostedThread(thread.id, session?.user.id);
-      const repostsCount = await getRepostsCount(thread.id);
-      const repliesCount = await getRepliesCount(thread.id);
-
-      data.push({
-        ...thread,
-        saved,
-        liked,
-        likesCount,
-        reposted,
-        repostsCount,
-        repliesCount,
-      });
-    }
-
-    return data;
-  },
-);
 export default component$(() => {
   const thread = useGetThread();
   const replies = useGetThreadReplies();
