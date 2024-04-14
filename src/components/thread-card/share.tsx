@@ -8,7 +8,7 @@ export const Share = component$(
     const handleShare = $(async () => {
       try {
         await navigator.clipboard.writeText(
-          `${location.url.href}${username}/post/${threadId}`,
+          `${location.url.href}${username}/thread/${threadId}`,
         );
         show.value = true;
       } catch (error) {
