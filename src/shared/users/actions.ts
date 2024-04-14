@@ -12,12 +12,12 @@ export const useFollowUser = routeAction$(
     }
     try {
       await followUser(session.user.id, userId);
-      throw redirect(301, url.href);
+      throw redirect(301, url.pathname + url.search);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
           await unfollowUser(session.user.id, userId);
-          throw redirect(301, url.href);
+          throw redirect(301, url.pathname + url.search);
         } catch (err: any) {
           if (err.message) {
             console.log("Error while unfollow user", err.message);
@@ -51,7 +51,7 @@ export const useUpdateUserProfile = routeAction$(
       },
     });
 
-    throw redirect(302, url.href);
+    throw redirect(302, url.pathname);
   },
   zod$((z) => ({
     id: z.string(),
