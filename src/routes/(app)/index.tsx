@@ -13,10 +13,18 @@ export default component$(() => {
   return (
     <div>
       <UserSuggestions users={users.value} />
-      <div class="mt-4 grid grid-cols-1 gap-4">
-        {threads.value.map((thread) => (
-          <ThreadCard key={thread.id} thread={thread} />
-        ))}
+      <div class="mt-8">
+        {threads.value.length ? (
+          <div class="grid grid-cols-1 gap-4">
+            {threads.value.map((thread) => (
+              <ThreadCard key={thread.id} thread={thread} />
+            ))}
+          </div>
+        ) : (
+          <p class="text-center opacity-50">
+            Your threads feed will appear here
+          </p>
+        )}
       </div>
     </div>
   );
