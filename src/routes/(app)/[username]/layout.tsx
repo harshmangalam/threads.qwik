@@ -11,7 +11,7 @@ import {
   useGetFollowersCount,
   useGetUser,
   useUpdateUserProfile,
-} from "~/shared/user";
+} from "~/shared/users";
 
 export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 

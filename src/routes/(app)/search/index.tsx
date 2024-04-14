@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { SearchForm } from "./search-form";
 import { User } from "./user";
-import { useSearchUsers } from "~/shared/user";
+import { useSearchUsers } from "~/shared/users";
 export { useSearchUsers };
 export default component$(() => {
   const searchUsers = useSearchUsers();

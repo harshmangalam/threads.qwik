@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { type UserSuggestionType } from "~/shared/user";
+import { type UserSuggestionType } from "~/shared/users";
 import { FollowAction } from "../follow-action";
 import { Link } from "@builder.io/qwik-city";
 

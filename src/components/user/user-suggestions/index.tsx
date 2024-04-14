@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { UserCard } from "./user-card";
-import { type UserSuggestionType } from "~/shared/user";
+import { type UserSuggestionType } from "~/shared/users";
 
 type UserSuggesionsProps = {
   users: UserSuggestionType[];

@@ -39,14 +39,14 @@ export const useGetRepostedThreads = routeLoader$(
     const results = [];
     for await (const repost of reposts) {
       const thread = repost.thread;
-      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const saved = await isSavedThread(thread.id, session?.user.id);
       const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
       const repostsCount = await getRepostsCount(thread.id);
       results.push({
         ...thread,
-        isSaved: isSaved,
+        saved,
         liked,
         likesCount,
         reposted,
@@ -236,7 +236,7 @@ export const useGetProfileThreds = routeLoader$(
     });
     const results = [];
     for await (const thread of threads) {
-      const isSaved = await isSavedThread(thread.id, session?.user.id);
+      const saved = await isSavedThread(thread.id, session?.user.id);
       const liked = await isLikedThread(thread.id, session?.user.id);
       const likesCount = await getThreadLikesCount(thread.id);
       const reposted = await hasRepostedThread(thread.id, session?.user.id);
@@ -245,7 +245,7 @@ export const useGetProfileThreds = routeLoader$(
 
       results.push({
         ...thread,
-        isSaved: isSaved,
+        saved,
         liked,
         likesCount,
         reposted,

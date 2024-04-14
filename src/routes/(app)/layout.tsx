@@ -25,7 +25,7 @@ export {
   useRepostThreads,
 } from "~/shared/thread";
 
-export { useFollowUser } from "~/shared/user";
+export { useFollowUser } from "~/shared/users";
 
 export default component$(() => {
   return (

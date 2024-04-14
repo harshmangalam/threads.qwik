@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Avatar } from "~/components/ui/avatar";
 import { FollowAction } from "~/components/user/follow-action";
-import { type UserSearchType } from "~/shared/user";
+import { type UserSearchType } from "~/shared/users";
 
 type UserProps = {
   user: UserSearchType;

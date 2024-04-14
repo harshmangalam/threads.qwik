@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { Button } from "../ui/button";
-import { useFollowUser } from "~/shared/user";
+import { useFollowUser } from "~/shared/users";
 
 type FollowActionProps = {
   id: string;
