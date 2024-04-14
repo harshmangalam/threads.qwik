@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar } from "~/components/ui/avatar";
-import { type UserSuggestionType } from "~/shared/user";
+import { type UserSuggestionType } from "~/shared/users";
 import UserLikeIcon from "~/assets/icons/heart.svg?jsx";
 import UserRepostIcon from "~/assets/icons/repost-check.svg?jsx";
 type LikeUserProps = {
