@@ -22,10 +22,10 @@ export const NavDropdown = component$(() => {
         tabIndex={0}
         class="dropdown-content z-[1] mt-4 w-44  rounded-xl   bg-base-100 shadow-md last:pb-2"
       >
-        <NavLink href="/" label="Appearance" />
-        <div class="divider m-0"></div>
-        <NavLink href="/" label="Settings" />
-        <div class="divider m-0"></div>
+        {/* <NavLink href="/" label="Appearance" /> */}
+        {/* <div class="divider m-0"></div> */}
+        {/* <NavLink href="/" label="Settings" /> */}
+        {/* <div class="divider m-0"></div> */}
         <NavLink href="/saved/" label="Saved" />
         <div class="divider m-0"></div>
         <NavLink href="/liked" label="Your likes" />

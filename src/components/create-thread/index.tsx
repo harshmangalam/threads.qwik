@@ -7,8 +7,8 @@ import { type ThreadType } from "~/shared/thread";
 import { SimpleThread } from "../thread-card/simple-thread";
 
 type CreateThreadProps = {
-  isReply: boolean;
-  thread: ThreadType;
+  isReply?: boolean;
+  thread?: ThreadType;
 };
 export const CreateThread = component$((props: CreateThreadProps) => {
   const { isReply = false, thread } = props;
@@ -22,7 +22,7 @@ export const CreateThread = component$((props: CreateThreadProps) => {
       </div>
       <dialog ref={modal} class="modal">
         <div class="modal-box">
-          {isReply && (
+          {isReply && thread && (
             <div class="mb-4">
               <SimpleThread thread={thread} />
             </div>
@@ -49,7 +49,7 @@ export const CreateThread = component$((props: CreateThreadProps) => {
               )}
               <div class="flex flex-1 flex-col gap-1">
                 <h3 class="font-medium">{session.value?.user.username}</h3>
-                {isReply && (
+                {isReply && thread && (
                   <input type="hidden" name="threadId" value={thread.id} />
                 )}
                 <textarea
@@ -59,7 +59,7 @@ export const CreateThread = component$((props: CreateThreadProps) => {
                   rows={2}
                   class="focus:outline-none"
                   placeholder={
-                    isReply
+                    isReply && thread
                       ? `Reply to ${thread.user.username}...`
                       : "Start a thread..."
                   }
