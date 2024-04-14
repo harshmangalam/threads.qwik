@@ -4,11 +4,11 @@ import { Like } from "./like";
 import { Reply } from "./reply";
 import { Repost } from "./repost";
 import { Share } from "./share";
-import { formatDistanceToNowStrict } from "date-fns";
 import { type ThreadType } from "~/shared/thread";
 import { Link } from "@builder.io/qwik-city";
 import { UserLikes } from "./user-activities/user-likes";
 import { UserReposts } from "./user-activities/user-reposts";
+import { getRelativeTime } from "~/utils/date";
 
 type ThreadCardProps = {
   thread: ThreadType;
@@ -32,7 +32,7 @@ export const ThreadCard = component$(({ thread }: ThreadCardProps) => {
             <h3 class="font-medium">{thread.user.username}</h3>
             <div class="flex items-center gap-3">
               <div class="text-sm opacity-50">
-                {formatDistanceToNowStrict(thread.createdAt)}
+                {getRelativeTime(thread.createdAt)}
               </div>
               <ActionsDropdown thread={thread} />
             </div>

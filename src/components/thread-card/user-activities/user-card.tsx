@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { formatDistanceToNow } from "date-fns";
+import { getRelativeTime } from "~/utils/date";
 import { Avatar } from "~/components/ui/avatar";
 import { type UserSuggestionType } from "~/shared/users";
 import UserLikeIcon from "~/assets/icons/heart.svg?jsx";
@@ -31,7 +31,7 @@ export const UserCard = component$(
         <div>
           <div class="flex items-center gap-4">
             <h4 class="font-medium">{user.username}</h4>
-            <div class="text-sm opacity-60">{formatDistanceToNow(date)}</div>
+            <div class="text-sm opacity-60">{getRelativeTime(date)}</div>
           </div>
           <div class="opacity-60">{user.name}</div>
         </div>

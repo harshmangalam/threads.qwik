@@ -1,7 +1,7 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import { type ThreadType, getThreadsLikes } from "~/shared/thread";
 import { Avatar } from "~/components/ui/avatar";
-import { formatDistanceToNowStrict } from "date-fns";
+import { getRelativeTime } from "~/utils/date";
 import { UserCard } from "./user-card";
 
 export const UserLikes = component$(
@@ -34,7 +34,7 @@ export const UserLikes = component$(
                   <h4 class="font-medium">{thread.user.username}</h4>
                 </div>
                 <p class="text-sm opacity-60">
-                  {formatDistanceToNowStrict(thread.createdAt)}
+                  {getRelativeTime(thread.createdAt)}
                 </p>
               </header>
               <p class="mt-3 text-sm">{thread.text}</p>
