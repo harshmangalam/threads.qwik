@@ -66,11 +66,20 @@ export const useCreateThread = routeAction$(
 export const useDeleteThread = routeAction$(
   async ({ threadId }, { redirect, url, error }) => {
     try {
+      // delete all likes from thread
       await prisma.likedThreads.deleteMany({
         where: {
           threadId,
         },
       });
+
+      // delete all reposts of the thread
+      await prisma.reposts.deleteMany({
+        where: {
+          threadId,
+        },
+      });
+
       await prisma.thread.delete({
         where: {
           id: threadId,
@@ -80,6 +89,7 @@ export const useDeleteThread = routeAction$(
       throw redirect(302, url.pathname);
     } catch (err: any) {
       if (err.message) {
+        console.log("Delete thread error ", err.message);
         throw error(500, "Internal server error");
       }
       throw err;
