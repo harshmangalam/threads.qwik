@@ -20,32 +20,25 @@ export const ActionsDropdown = component$(
           class="menu  dropdown-content z-[1] w-44  rounded-xl   bg-base-100 shadow-md"
         >
           <li>
-            <SaveThread isSaved={thread.isSaved} threadId={thread.id} />
+            <SaveThread isSaved={thread.saved} threadId={thread.id} />
           </li>
-          <li>
-            <button>Hide</button>
-          </li>
-          <li>
-            <button>Mute</button>
-          </li>
+
           {isCurrentUser && (
             <EditReplyPrivacy
               replyPrivacy={thread.replyPrivacy}
               threadId={thread.id}
             />
           )}
-          <li>
-            {isCurrentUser ? (
+          {isCurrentUser && (
+            <li>
               <button
                 onClick$={() => deleteThread.submit({ threadId: thread.id })}
                 class="flex justify-start font-medium text-error"
               >
                 Delete
               </button>
-            ) : (
-              <button class="font-medium text-error">Unfollow</button>
-            )}
-          </li>
+            </li>
+          )}
         </ul>
       </div>
     );

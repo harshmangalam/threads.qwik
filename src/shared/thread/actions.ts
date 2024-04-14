@@ -92,7 +92,7 @@ export const useDeleteThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useUpdateReplyPrivacy = routeAction$(
-  async ({ threadId, replyPrivacy }) => {
+  async ({ threadId, replyPrivacy }, { redirect, url }) => {
     await prisma.thread.update({
       where: {
         id: threadId,
@@ -101,6 +101,7 @@ export const useUpdateReplyPrivacy = routeAction$(
         replyPrivacy,
       },
     });
+    throw redirect(302, url.pathname);
   },
   zod$((z) => ({
     threadId: z.string(),
@@ -117,12 +118,12 @@ export const useSaveThread = routeAction$(
     }
     try {
       await saveThread(threadId, session.user.id);
-      throw redirect(302, url.href);
+      throw redirect(302, url.pathname);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
           await unSaveThread(threadId, session.user.id);
-          throw redirect(302, url.href);
+          throw redirect(302, url.pathname);
         } catch (err: any) {
           if (err.message) {
             console.log("Error while unsave thread", err.message);

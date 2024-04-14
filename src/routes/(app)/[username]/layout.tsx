@@ -12,6 +12,7 @@ import {
   useGetUser,
   useUpdateUserProfile,
 } from "~/shared/users";
+import { Avatar } from "~/components/ui/avatar";
 
 export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 
@@ -23,8 +24,8 @@ export default component$(() => {
     <div>
       {/* profile details section  */}
       <section class="py-4">
-        <div class="flex items-center gap-1">
-          <div class="flex-1">
+        <div class="flex items-center justify-between gap-4">
+          <div>
             <div class="flex flex-col gap-1">
               <h2 class="text-2xl font-bold">{user.value.name}</h2>
               <div class="flex items-center gap-2">
@@ -38,15 +39,14 @@ export default component$(() => {
               </div>
             </div>
           </div>
-
-          <div class="flex-none">
+          <div>
             {user.value.image && (
               <ImagePreview src={user.value.image}>
-                <div class="avatar">
-                  <div class="w-16 rounded-full md:w-24">
-                    <img width={96} height={96} src={user.value.image} />
-                  </div>
-                </div>
+                <Avatar
+                  size="xl"
+                  src={user.value.image}
+                  rounded="rounded-full"
+                />
               </ImagePreview>
             )}
           </div>
