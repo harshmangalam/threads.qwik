@@ -8,6 +8,9 @@ dependencies:
   '@auth/prisma-adapter':
     specifier: ^1.5.0
     version: 1.6.0(@prisma/client@5.12.1)
+  '@fontsource-variable/open-sans':
+    specifier: ^5.0.28
+    version: 5.0.28
   '@fontsource/open-sans':
     specifier: ^5.0.27
     version: 5.0.27
@@ -452,6 +455,10 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@fontsource-variable/open-sans@5.0.28:
+    resolution: {integrity: sha512-PYfH6e+Jm8N5DRRAEOGneQx3ObnyNgAJ9WTbw7w84tSEmvk+ypo1kUslF2WGkgaygU2uN7wwAAPVnO7YYpipzg==}
+    dev: false
 
   /@fontsource/open-sans@5.0.27:
     resolution: {integrity: sha512-tFTqx2TE9srmM3pMEHldw0lTglqhKwFX6PVDEL0OF9xNT0x5W9brsezFHhV/U36pQV9So7S0vo4yVpnLzBBQew==}
