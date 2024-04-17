@@ -12,7 +12,6 @@ import {
   useGetUser,
   useUpdateUserProfile,
 } from "~/shared/users";
-import { Avatar } from "~/components/ui/avatar";
 
 export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 
@@ -39,13 +38,15 @@ export default component$(() => {
               </div>
             </div>
           </div>
-          <div>
+          <div class="flex-none">
             {user.value.image && (
               <ImagePreview src={user.value.image}>
-                <Avatar
-                  size="xl"
+                <img
+                  alt={user.value.username}
                   src={user.value.image}
-                  rounded="rounded-full"
+                  class="h-24 w-24 rounded-full"
+                  width={96}
+                  height={96}
                 />
               </ImagePreview>
             )}

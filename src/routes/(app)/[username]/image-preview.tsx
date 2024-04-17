@@ -4,10 +4,7 @@ export const ImagePreview = component$(({ src }: { src: string }) => {
   const dialog = useSignal<HTMLDialogElement>();
   return (
     <>
-      <button
-        class="btn btn-circle btn-ghost"
-        onClick$={() => dialog.value?.showModal()}
-      >
+      <button onClick$={() => dialog.value?.showModal()}>
         <Slot />
       </button>
       <dialog ref={dialog} class="modal bg-base-100">
