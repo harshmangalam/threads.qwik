@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.0",
+    "@fontsource/open-sans": "^5.0.27",
     "@prisma/client": "^5.10.2",
     "date-fns": "^3.4.0"
   }
