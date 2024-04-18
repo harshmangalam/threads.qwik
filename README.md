@@ -70,6 +70,8 @@ pnpm dev
   - Threads feed
   - Thread Replies
   - Thread Reposts
+  - Followers
+  - Followings
 
 - Saved threads
 - Search Users
