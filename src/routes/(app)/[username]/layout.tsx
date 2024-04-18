@@ -12,6 +12,7 @@ import {
   useGetUser,
   useUpdateUserProfile,
 } from "~/shared/users";
+import { FollowsModal } from "./follows-modal";
 
 export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 
@@ -58,10 +59,10 @@ export default component$(() => {
         </div>
         <div class="mt-4 flex items-center justify-between gap-4">
           <div class="flex items-center gap-2 text-sm opacity-60">
-            <div>
-              {followersCount.value}{" "}
-              {followersCount.value >= 2 ? "followers" : "follower"}
-            </div>
+            <FollowsModal
+              userId={user.value.id}
+              followersCount={followersCount.value}
+            />
             {user.value.link && <div>·</div>}
             {user.value.link && (
               <a href={user.value.link} target="_blank">

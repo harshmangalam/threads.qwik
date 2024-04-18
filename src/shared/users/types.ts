@@ -13,7 +13,7 @@ export type UserSearchType = Pick<
   shouldFollowBack: boolean;
 };
 
-export type UserListType = Pick<User, "id" | "username" | "image"> & {
+export type UserListType = Pick<User, "id" | "username" | "image" | "name"> & {
   isFollowing: boolean;
   shouldFollowBack: boolean;
 };
