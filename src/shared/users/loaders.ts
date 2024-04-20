@@ -1,7 +1,7 @@
 import type { Session } from "@auth/core/types";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import { prisma } from "~/utils/prisma";
-import type { UserSearchType, UserSuggestionType } from "./types";
+import type { UserListType, UserSearchType, UserSuggestionType } from "./types";
 import { followersCount, isFollowing } from "./common";
 
 // eslint-disable-next-line qwik/loader-location
@@ -95,3 +95,78 @@ export const useSearchUsers = routeLoader$(
     }
   },
 );
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetFollowers = routeLoader$(async ({ params, error }) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      username: params.username,
+    },
+  });
+  if (!user) throw error(404, "User not found");
+  const follows = await prisma.follows.findMany({
+    where: {
+      followingId: user.id,
+    },
+    include: {
+      followedBy: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  // eslint-disable-next-line qwik/loader-location
+  const results: UserListType[] = [];
+  for await (const follow of follows) {
+    const following = await isFollowing(user.id, follow.followedBy.id);
+    results.push({
+      ...follow.followedBy,
+      isFollowing: following,
+      shouldFollowBack: !following,
+    });
+  }
+
+  return results;
+});
+
+// eslint-disable-next-line qwik/loader-location
+export const useGetFollowings = routeLoader$(async ({ params, error }) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      username: params.username,
+    },
+  });
+  if (!user) throw error(404, "User not found");
+  const follows = await prisma.follows.findMany({
+    where: {
+      followedById: user.id,
+    },
+    include: {
+      following: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  const results: UserListType[] = [];
+  for await (const follow of follows) {
+    const following = await isFollowing(user.id, follow.following.id);
+    results.push({
+      ...follow.following,
+      isFollowing: following,
+      shouldFollowBack: !following,
+    });
+  }
+
+  return results;
+});

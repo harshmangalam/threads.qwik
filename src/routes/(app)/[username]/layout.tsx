@@ -12,8 +12,7 @@ import {
   useGetUser,
   useUpdateUserProfile,
 } from "~/shared/users";
-import { FollowsModal } from "./follows-modal";
-
+import { Link } from "@builder.io/qwik-city";
 export { useGetUser, useUpdateUserProfile, useGetFollowersCount };
 
 export default component$(() => {
@@ -59,10 +58,10 @@ export default component$(() => {
         </div>
         <div class="mt-4 flex items-center justify-between gap-4">
           <div class="flex items-center gap-2 text-sm opacity-60">
-            <FollowsModal
-              userId={user.value.id}
-              followersCount={followersCount.value}
-            />
+            <Link href={`/${user.value.username}/followers`}>
+              {followersCount.value}{" "}
+              {followersCount.value > 1 ? "followers" : "follower"}
+            </Link>
             {user.value.link && <div>·</div>}
             {user.value.link && (
               <a href={user.value.link} target="_blank">
