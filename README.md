@@ -2,6 +2,10 @@
 
 Qwik version of threads
 
+## Demo
+
+[![qwik.threads](https://img.youtube.com/vi/LsDpXoozGI0/0.jpg)](https://www.youtube.com/watch?v=LsDpXoozGI0)
+
 ## Tech stack
 
 - Qwikcity
