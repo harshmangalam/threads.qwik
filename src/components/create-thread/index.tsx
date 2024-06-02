@@ -1,4 +1,4 @@
-import { Slot, component$, useSignal } from "@builder.io/qwik";
+import { $, Slot, component$, useSignal } from "@builder.io/qwik";
 import { ReplyDropdown } from "./reply-dropdown";
 import { Form } from "@builder.io/qwik-city";
 import { useCreateThread } from "~/routes/(app)/layout";
@@ -10,11 +10,16 @@ type CreateThreadProps = {
   isReply?: boolean;
   thread?: ThreadType;
 };
+
 export const CreateThread = component$((props: CreateThreadProps) => {
   const { isReply = false, thread } = props;
   const session = useAuthSession();
   const createThread = useCreateThread();
   const modal = useSignal<HTMLDialogElement>();
+
+  const handleSubmitCompleted = $(() => {
+    modal.value?.close();
+  });
   return (
     <div>
       <div onClick$={() => modal.value?.showModal()}>
@@ -29,9 +34,7 @@ export const CreateThread = component$((props: CreateThreadProps) => {
           )}
           <Form
             action={createThread}
-            onSubmitCompleted$={() => {
-              modal.value?.close();
-            }}
+            onSubmitCompleted$={handleSubmitCompleted}
           >
             <div class="flex gap-3">
               {session.value?.user.image && (

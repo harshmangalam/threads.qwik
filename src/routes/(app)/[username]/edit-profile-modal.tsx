@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import type { User } from "@prisma/client";
 import { TextInput } from "~/components/ui/text-input";
@@ -32,7 +32,9 @@ const PrivateProfileSwitch = component$(({ checked }: { checked: boolean }) => {
 export const EditProfileModal = component$(({ user }: { user: User }) => {
   const modal = useSignal<HTMLDialogElement>();
   const updateUserProfile = useUpdateUserProfile();
-
+  const handleSubmitCompleted = $(() => {
+    modal.value?.close();
+  });
   return (
     <div>
       <button
@@ -46,7 +48,7 @@ export const EditProfileModal = component$(({ user }: { user: User }) => {
         <div class="modal-box w-full max-w-md">
           <Form
             action={updateUserProfile}
-            onSubmitCompleted$={() => modal.value?.close()}
+            onSubmitCompleted$={handleSubmitCompleted}
           >
             <input type="hidden" value={user.id} name="id" />
             <div class="flex flex-col gap-2">

@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { Form } from "@builder.io/qwik-city";
 import { useUpdateReplyPrivacy } from "~/shared/thread";
 
@@ -46,6 +46,10 @@ export const EditReplyPrivacy = component$(
         value: "MENTION",
       },
     ];
+
+    const handleSubmitCompleted = $(() => {
+      modal.value?.close();
+    });
     return (
       <div>
         <li>
@@ -57,7 +61,7 @@ export const EditReplyPrivacy = component$(
           <div class="modal-box w-full max-w-xs">
             <Form
               action={updateReplyPrivacy}
-              onSubmitCompleted$={() => modal.value?.close()}
+              onSubmitCompleted$={handleSubmitCompleted}
             >
               <input type="hidden" name="threadId" value={threadId} />
               <div class="flex flex-col divide-y">
