@@ -13,8 +13,9 @@
     "build": "qwik build",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
+    "build.server": "vite build -c adapters/vercel-edge/vite.config.ts",
     "build.types": "tsc --incremental --noEmit",
-    "deploy": "echo 'Run \"npm run qwik add\" to install a server adapter'",
+    "deploy": "vercel deploy",
     "dev": "vite --mode ssr",
     "dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",
     "fmt": "prettier --write .",
@@ -40,10 +41,11 @@
     "postcss": "^8.4.31",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.4",
-    "prisma": "^5.10.2",
+    "prisma": "^5.14.0",
     "tailwindcss": "3.3.3",
     "typescript": "5.3.3",
     "undici": "*",
+    "vercel": "^29.1.1",
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.2.1"
   },
@@ -51,7 +53,7 @@
     "@auth/prisma-adapter": "^1.5.0",
     "@fontsource-variable/open-sans": "^5.0.28",
     "@fontsource/open-sans": "^5.0.27",
-    "@prisma/client": "^5.10.2",
+    "@prisma/client": "^5.14.0",
     "date-fns": "^3.4.0"
   }
 }

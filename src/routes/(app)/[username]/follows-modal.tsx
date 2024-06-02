@@ -1,7 +1,6 @@
 import { component$, useSignal, useTask$ } from "@builder.io/qwik";
 import { UserFollow } from "~/components/user/user-follow";
-import { type UserListType } from "~/shared/users";
-import { getFollowers, getFollowings } from "~/shared/users/server-actions";
+import { type UserListType, getFollowers, getFollowings } from "~/shared/users";
 
 export const FollowsModal = component$(
   ({ userId, followersCount }: { userId: string; followersCount: number }) => {
