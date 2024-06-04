@@ -18,6 +18,9 @@ export default defineConfig((): UserConfig => {
     },
     optimizeDeps:{
       include:["@auth/core"]
+    },
+    build:{
+      target:"ES2022"
     }
   };
 });
