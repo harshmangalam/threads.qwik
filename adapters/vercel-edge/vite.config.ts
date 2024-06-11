@@ -14,7 +14,7 @@ export default extendConfig(baseConfig, () => {
     plugins: [vercelEdgeAdapter()],
     resolve: {
       alias: {
-        ".prisma/client/default": "./node_modules/.prisma/client/default.js",
+        ".prisma/client/default": "./node_modules/.pnpm/@prisma+client@5.15.0_prisma@5.15.0/node_modules/@prisma/client/default.js",
         "./query_engine_bg.wasm?module": "./node_modules/.prisma/client/query_engine_bg.wasm?init",
       },
     },
