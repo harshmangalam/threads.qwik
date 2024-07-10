@@ -108,20 +108,20 @@ Additionally, within the `package.json`, the `build.server` script will be updat
 
 ## Production build
 
-To build the application for production, use the `build` command, this command will automatically run `pnpm build.server` and `pnpm build.client`:
+To build the application for production, use the `build` command, this command will automatically run `npm run build.server` and `npm run build.client`:
 
 ```shell
-pnpm build
+npm run build
 ```
 
-[Read the full guide here](https://github.com/BuilderIO/qwik/blob/main/starters/adapters/vercel-edge/README.md)
+[Read the full guide here](https://github.com/QwikDev/qwik/blob/main/starters/adapters/vercel-edge/README.md)
 
 ## Dev deploy
 
 To deploy the application for development:
 
 ```shell
-pnpm deploy
+npm run deploy
 ```
 
 Notice that you might need a [Vercel account](https://docs.Vercel.com/get-started/) in order to complete this step!

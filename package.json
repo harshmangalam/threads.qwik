@@ -21,10 +21,10 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
+    "postinstall": "npx prisma generate --no-engine",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik",
-    "postinstall": "prisma generate"
+    "qwik": "qwik"
   },
   "devDependencies": {
     "@auth/core": "^0.13.0",
@@ -55,9 +55,8 @@
     "@auth/prisma-adapter": "^1.5.0",
     "@fontsource-variable/open-sans": "^5.0.28",
     "@fontsource/open-sans": "^5.0.27",
-    "@neondatabase/serverless": "^0.9.3",
-    "@prisma/adapter-neon": "^5.14.0",
-    "@prisma/client": "^5.14.0",
+    "@prisma/client": "^5.16.2",
+    "@prisma/extension-accelerate": "^1.1.0",
     "date-fns": "^3.4.0",
     "ws": "^8.17.0"
   }
