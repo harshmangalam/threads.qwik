@@ -16,34 +16,37 @@ declare module "@auth/core/adapters" {
 }
 
 export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
-  serverAuth$(({ env }) => ({
-    // @ts-ignore
-    adapter: PrismaAdapter(prisma),
-    secret: env.get("AUTH_SECRET"),
-    trustHost: true,
-    providers: [
-      GitHub({
-        clientId: env.get("GITHUB_ID")!,
-        clientSecret: env.get("GITHUB_SECRET")!,
-        profile: (p) => ({
-          id: p.id.toString(),
-          username: p.login,
-          email: p.email,
-          image: p.avatar_url,
-          name: p.name,
+  // @ts-ignore
+  serverAuth$(({ env }) => {
+    console.log({ authAdapter: env.get("DATABASE_URL") });
+    return {
+      adapter: PrismaAdapter(prisma),
+      secret: env.get("AUTH_SECRET"),
+      trustHost: true,
+      providers: [
+        GitHub({
+          clientId: env.get("GITHUB_ID")!,
+          clientSecret: env.get("GITHUB_SECRET")!,
+          profile: (p) => ({
+            id: p.id.toString(),
+            username: p.login,
+            email: p.email,
+            image: p.avatar_url,
+            name: p.name,
+          }),
         }),
-      }),
-    ] as Provider[],
+      ] as Provider[],
 
-    callbacks: {
-      session: async (opts) => {
-        const { session, user } = opts;
-        return {
-          ...session,
-          user: {
-            ...user,
-          },
-        };
+      callbacks: {
+        session: async (opts) => {
+          const { session, user } = opts;
+          return {
+            ...session,
+            user: {
+              ...user,
+            },
+          };
+        },
       },
-    },
-  }));
+    };
+  });
