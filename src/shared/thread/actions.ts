@@ -1,6 +1,6 @@
 import type { Session } from "@auth/core/types";
 import { routeAction$, zod$ } from "@builder.io/qwik-city";
-import { prisma } from "~/utils/prisma";
+import { getPrisma } from "~/utils/prisma";
 import {
   likeThread,
   repostThread,
@@ -14,8 +14,9 @@ import {
 export const useCreateThread = routeAction$(
   async (
     { replyPrivacy, text, threadId },
-    { sharedMap, redirect, url, error },
+    { sharedMap, redirect, url, error, env },
   ) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, `/login`);
@@ -64,7 +65,8 @@ export const useCreateThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useDeleteThread = routeAction$(
-  async ({ threadId }, { redirect, url, error }) => {
+  async ({ threadId }, { redirect, url, error, env }) => {
+    const prisma = getPrisma(env);
     try {
       // delete all likes from thread
       await prisma.likedThreads.deleteMany({
@@ -102,7 +104,8 @@ export const useDeleteThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useUpdateReplyPrivacy = routeAction$(
-  async ({ threadId, replyPrivacy }, { redirect, url }) => {
+  async ({ threadId, replyPrivacy }, { redirect, url, env }) => {
+    const prisma = getPrisma(env);
     await prisma.thread.update({
       where: {
         id: threadId,
@@ -121,18 +124,18 @@ export const useUpdateReplyPrivacy = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useSaveThread = routeAction$(
-  async ({ threadId }, { redirect, sharedMap, error, url }) => {
+  async ({ threadId }, { redirect, sharedMap, error, url, env }) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, "/login/");
     }
     try {
-      await saveThread(threadId, session.user.id);
+      await saveThread(env, threadId, session.user.id);
       throw redirect(302, url.pathname);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
-          await unSaveThread(threadId, session.user.id);
+          await unSaveThread(env, threadId, session.user.id);
           throw redirect(302, url.pathname);
         } catch (err: any) {
           if (err.message) {
@@ -156,19 +159,19 @@ export const useSaveThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useLikeThread = routeAction$(
-  async ({ threadId }, { sharedMap, redirect, url, error }) => {
+  async ({ threadId }, { sharedMap, redirect, url, error, env }) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, "/login");
     }
 
     try {
-      await likeThread(threadId, session.user.id);
+      await likeThread(env, threadId, session.user.id);
       throw redirect(301, url.pathname);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
-          await unlikeThread(threadId, session.user.id);
+          await unlikeThread(env, threadId, session.user.id);
           throw redirect(301, url.pathname);
         } catch (err: any) {
           if (err.message) {
@@ -192,18 +195,18 @@ export const useLikeThread = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useRepostThreads = routeAction$(
-  async ({ threadId }, { error, redirect, sharedMap, url }) => {
+  async ({ threadId }, { error, redirect, sharedMap, url, env }) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw redirect(302, "/login");
     }
     try {
-      await repostThread(threadId, session.user.id);
+      await repostThread(env, threadId, session.user.id);
       throw redirect(301, url.pathname);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
-          await undoRepost(threadId, session.user.id);
+          await undoRepost(env, threadId, session.user.id);
           throw redirect(301, url.pathname);
         } catch (err: any) {
           if (err.message) {

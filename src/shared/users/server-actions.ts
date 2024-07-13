@@ -1,8 +1,9 @@
 import { server$ } from "@builder.io/qwik-city";
-import { prisma } from "~/utils/prisma";
+import { getPrisma } from "~/utils/prisma";
 import { type UserListType } from "./types";
 import { isFollowing } from "./common";
 export const getFollowers = server$(async (userId: string) => {
+  const prisma = getPrisma((this as any).env);
   const follows = await prisma.follows.findMany({
     where: {
       followingId: userId,
@@ -21,7 +22,11 @@ export const getFollowers = server$(async (userId: string) => {
 
   const results: UserListType[] = [];
   for await (const follow of follows) {
-    const following = await isFollowing(follow.followedBy.id, userId);
+    const following = await isFollowing(
+      (this as any).env,
+      follow.followedBy.id,
+      userId,
+    );
     results.push({
       ...follow.followedBy,
       isFollowing: following,
@@ -33,6 +38,7 @@ export const getFollowers = server$(async (userId: string) => {
 });
 
 export const getFollowings = server$(async (userId: string) => {
+  const prisma = getPrisma((this as any).env);
   const follows = await prisma.follows.findMany({
     where: {
       followedById: userId,
@@ -51,7 +57,11 @@ export const getFollowings = server$(async (userId: string) => {
 
   const results: UserListType[] = [];
   for await (const follow of follows) {
-    const following = await isFollowing(userId, follow.following.id);
+    const following = await isFollowing(
+      (this as any).env,
+      userId,
+      follow.following.id,
+    );
     results.push({
       ...follow.following,
       isFollowing: following,
