@@ -21,7 +21,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "postinstall": "npx prisma generate --no-engine",
+    "postinstall": "npx prisma generate --no-engine && npx prisma migrate deploy",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
     "qwik": "qwik"
