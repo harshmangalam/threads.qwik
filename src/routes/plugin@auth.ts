@@ -17,8 +17,9 @@ declare module "@auth/core/adapters" {
 
 export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
   // @ts-ignore
-  serverAuth$(({ env }) => {
-    console.log({ authAdapter: env.get("DATABASE_URL") });
+  serverAuth$(async ({ env }) => {
+    const user = await prisma.user.findMany();
+    console.log({ user });
     return {
       adapter: PrismaAdapter(prisma),
       secret: env.get("AUTH_SECRET"),
@@ -38,7 +39,7 @@ export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
       ] as Provider[],
 
       callbacks: {
-        session: async (opts) => {
+        session: async (opts: any) => {
           const { session, user } = opts;
           return {
             ...session,
