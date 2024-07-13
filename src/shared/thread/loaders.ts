@@ -9,12 +9,13 @@ import {
   isLikedThread,
   isSavedThread,
 } from "./common";
-import { prisma } from "~/utils/prisma";
+import { getPrisma } from "~/utils/prisma";
 import type { ThreadType } from "./types";
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetRepostedThreads = routeLoader$(
-  async ({ params, sharedMap }) => {
+  async ({ params, sharedMap, env }) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     const reposts = await prisma.reposts.findMany({
       where: {
@@ -39,11 +40,15 @@ export const useGetRepostedThreads = routeLoader$(
     const results = [];
     for await (const repost of reposts) {
       const thread = repost.thread;
-      const saved = await isSavedThread(thread.id, session?.user.id);
-      const liked = await isLikedThread(thread.id, session?.user.id);
-      const likesCount = await getThreadLikesCount(thread.id);
-      const reposted = await hasRepostedThread(thread.id, session?.user.id);
-      const repostsCount = await getRepostsCount(thread.id);
+      const saved = await isSavedThread(env, thread.id, session?.user.id);
+      const liked = await isLikedThread(env, thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(env, thread.id);
+      const reposted = await hasRepostedThread(
+        env,
+        thread.id,
+        session?.user.id,
+      );
+      const repostsCount = await getRepostsCount(env, thread.id);
       results.push({
         ...thread,
         saved,
@@ -59,7 +64,8 @@ export const useGetRepostedThreads = routeLoader$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetProfileReplies = routeLoader$(
-  async ({ params, sharedMap }) => {
+  async ({ params, sharedMap, env }) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     const threads = await prisma.thread.findMany({
       where: {
@@ -91,12 +97,16 @@ export const useGetProfileReplies = routeLoader$(
     });
     const results: ThreadType[] = [];
     for await (const thread of threads) {
-      const saved = await isSavedThread(thread.id, session?.user.id);
-      const liked = await isLikedThread(thread.id, session?.user.id);
-      const likesCount = await getThreadLikesCount(thread.id);
-      const reposted = await hasRepostedThread(thread.id, session?.user.id);
-      const repostsCount = await getRepostsCount(thread.id);
-      const repliesCount = await getRepliesCount(thread.id);
+      const saved = await isSavedThread(env, thread.id, session?.user.id);
+      const liked = await isLikedThread(env, thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(env, thread.id);
+      const reposted = await hasRepostedThread(
+        env,
+        thread.id,
+        session?.user.id,
+      );
+      const repostsCount = await getRepostsCount(env, thread.id);
+      const repliesCount = await getRepliesCount(env, thread.id);
 
       results.push({
         ...thread,
@@ -110,20 +120,23 @@ export const useGetProfileReplies = routeLoader$(
           ? {
               ...thread.parentThread,
               saved: await isSavedThread(
+                env,
                 thread.parentThreadId,
                 session?.user.id,
               ),
               liked: await isLikedThread(
+                env,
                 thread.parentThreadId,
                 session?.user.id,
               ),
-              likesCount: await getThreadLikesCount(thread.parentThreadId),
+              likesCount: await getThreadLikesCount(env, thread.parentThreadId),
               reposted: await hasRepostedThread(
+                env,
                 thread.parentThreadId,
                 session?.user.id,
               ),
-              repostsCount: await getRepostsCount(thread.parentThreadId),
-              repliesCount: await getRepliesCount(thread.parentThreadId),
+              repostsCount: await getRepostsCount(env, thread.parentThreadId),
+              repliesCount: await getRepliesCount(env, thread.parentThreadId),
             }
           : undefined,
       });
@@ -133,7 +146,8 @@ export const useGetProfileReplies = routeLoader$(
 );
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetLikedThreads = routeLoader$(async ({ sharedMap }) => {
+export const useGetLikedThreads = routeLoader$(async ({ sharedMap, env }) => {
+  const prisma = getPrisma(env);
   const session: Session | null = sharedMap.get("session");
   const savedThreads = await prisma.likedThreads.findMany({
     where: {
@@ -155,11 +169,15 @@ export const useGetLikedThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results: ThreadType[] = [];
   for await (const data of savedThreads) {
-    const liked = await isLikedThread(data.threadId, session?.user.id);
-    const likesCount = await getThreadLikesCount(data.threadId);
-    const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
-    const repostsCount = await getRepostsCount(data.thread.id);
-    const repliesCount = await getRepliesCount(data.thread.id);
+    const liked = await isLikedThread(env, data.threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(env, data.threadId);
+    const reposted = await hasRepostedThread(
+      env,
+      data.thread.id,
+      session?.user.id,
+    );
+    const repostsCount = await getRepostsCount(env, data.thread.id);
+    const repliesCount = await getRepliesCount(env, data.thread.id);
 
     results.push({
       ...data.thread,
@@ -175,7 +193,8 @@ export const useGetLikedThreads = routeLoader$(async ({ sharedMap }) => {
 });
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
+export const useGetThreads = routeLoader$(async ({ sharedMap, env }) => {
+  const prisma = getPrisma(env);
   const session: Session | null = sharedMap.get("session");
   const threads = await prisma.thread.findMany({
     where: {
@@ -193,12 +212,12 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results = [];
   for await (const thread of threads) {
-    const saved = await isSavedThread(thread.id, session?.user.id);
-    const liked = await isLikedThread(thread.id, session?.user.id);
-    const reposted = await hasRepostedThread(thread.id, session?.user.id);
-    const repostsCount = await getRepostsCount(thread.id);
-    const likesCount = await getThreadLikesCount(thread.id);
-    const repliesCount = await getRepliesCount(thread.id);
+    const saved = await isSavedThread(env, thread.id, session?.user.id);
+    const liked = await isLikedThread(env, thread.id, session?.user.id);
+    const reposted = await hasRepostedThread(env, thread.id, session?.user.id);
+    const repostsCount = await getRepostsCount(env, thread.id);
+    const likesCount = await getThreadLikesCount(env, thread.id);
+    const repliesCount = await getRepliesCount(env, thread.id);
 
     results.push({
       ...thread,
@@ -215,7 +234,8 @@ export const useGetThreads = routeLoader$(async ({ sharedMap }) => {
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetProfileThreds = routeLoader$(
-  async ({ params, sharedMap }) => {
+  async ({ params, sharedMap, env }) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     const threads = await prisma.thread.findMany({
       where: {
@@ -236,12 +256,16 @@ export const useGetProfileThreds = routeLoader$(
     });
     const results = [];
     for await (const thread of threads) {
-      const saved = await isSavedThread(thread.id, session?.user.id);
-      const liked = await isLikedThread(thread.id, session?.user.id);
-      const likesCount = await getThreadLikesCount(thread.id);
-      const reposted = await hasRepostedThread(thread.id, session?.user.id);
-      const repostsCount = await getRepostsCount(thread.id);
-      const repliesCount = await getRepliesCount(thread.id);
+      const saved = await isSavedThread(env, thread.id, session?.user.id);
+      const liked = await isLikedThread(env, thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(env, thread.id);
+      const reposted = await hasRepostedThread(
+        env,
+        thread.id,
+        session?.user.id,
+      );
+      const repostsCount = await getRepostsCount(env, thread.id);
+      const repliesCount = await getRepliesCount(env, thread.id);
 
       results.push({
         ...thread,
@@ -258,7 +282,8 @@ export const useGetProfileThreds = routeLoader$(
 );
 
 // eslint-disable-next-line qwik/loader-location
-export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
+export const useGetSavedThreads = routeLoader$(async ({ sharedMap, env }) => {
+  const prisma = getPrisma(env);
   const session: Session | null = sharedMap.get("session");
   const savedThreads = await prisma.savedThreads.findMany({
     where: {
@@ -280,11 +305,15 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
   });
   const results: ThreadType[] = [];
   for await (const data of savedThreads) {
-    const liked = await isLikedThread(data.threadId, session?.user.id);
-    const likesCount = await getThreadLikesCount(data.threadId);
-    const reposted = await hasRepostedThread(data.thread.id, session?.user.id);
-    const repostsCount = await getRepostsCount(data.thread.id);
-    const repliesCount = await getRepliesCount(data.thread.id);
+    const liked = await isLikedThread(env, data.threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(env, data.threadId);
+    const reposted = await hasRepostedThread(
+      env,
+      data.thread.id,
+      session?.user.id,
+    );
+    const repostsCount = await getRepostsCount(env, data.thread.id);
+    const repliesCount = await getRepliesCount(env, data.thread.id);
 
     results.push({
       ...data.thread,
@@ -301,7 +330,8 @@ export const useGetSavedThreads = routeLoader$(async ({ sharedMap }) => {
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetThreadReplies = routeLoader$(
-  async ({ sharedMap, params }) => {
+  async ({ sharedMap, params, env }) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     const threadId = params.threadId;
 
@@ -323,12 +353,16 @@ export const useGetThreadReplies = routeLoader$(
     const data: ThreadType[] = [];
 
     for await (const thread of replies) {
-      const saved = await isSavedThread(thread.id, session?.user.id);
-      const liked = await isLikedThread(thread.id, session?.user.id);
-      const likesCount = await getThreadLikesCount(thread.id);
-      const reposted = await hasRepostedThread(thread.id, session?.user.id);
-      const repostsCount = await getRepostsCount(thread.id);
-      const repliesCount = await getRepliesCount(thread.id);
+      const saved = await isSavedThread(env, thread.id, session?.user.id);
+      const liked = await isLikedThread(env, thread.id, session?.user.id);
+      const likesCount = await getThreadLikesCount(env, thread.id);
+      const reposted = await hasRepostedThread(
+        env,
+        thread.id,
+        session?.user.id,
+      );
+      const repostsCount = await getRepostsCount(env, thread.id);
+      const repliesCount = await getRepliesCount(env, thread.id);
 
       data.push({
         ...thread,
@@ -347,15 +381,16 @@ export const useGetThreadReplies = routeLoader$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useGetThread = routeLoader$(
-  async ({ params, sharedMap, error }) => {
+  async ({ params, sharedMap, error, env }) => {
+    const prisma = getPrisma(env);
     const session: Session | null = sharedMap.get("session");
     const threadId = params.threadId;
-    const saved = await isSavedThread(threadId, session?.user.id);
-    const liked = await isLikedThread(threadId, session?.user.id);
-    const likesCount = await getThreadLikesCount(threadId);
-    const reposted = await hasRepostedThread(threadId, session?.user.id);
-    const repostsCount = await getRepostsCount(threadId);
-    const repliesCount = await getRepliesCount(threadId);
+    const saved = await isSavedThread(env, threadId, session?.user.id);
+    const liked = await isLikedThread(env, threadId, session?.user.id);
+    const likesCount = await getThreadLikesCount(env, threadId);
+    const reposted = await hasRepostedThread(env, threadId, session?.user.id);
+    const repostsCount = await getRepostsCount(env, threadId);
+    const repliesCount = await getRepliesCount(env, threadId);
 
     const thread = await prisma.thread.findUnique({
       where: {
