@@ -31,7 +31,7 @@
     "@builder.io/qwik": "^1.7.1",
     "@builder.io/qwik-auth": "0.1.1",
     "@builder.io/qwik-city": "^1.7.1",
-    "@types/bun": "*",
+    "@types/bun": "^1.1.6",
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.11.6",
     "@types/ws": "^8.5.10",
