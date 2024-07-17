@@ -1,22 +1,22 @@
 import type { Session } from "@auth/core/types";
 import { routeAction$, zod$ } from "@builder.io/qwik-city";
 import { followUser, unfollowUser } from "./common";
-import { prisma } from "~/utils/prisma";
+import { getPrisma } from "~/utils/prisma";
 
 // eslint-disable-next-line qwik/loader-location
 export const useFollowUser = routeAction$(
-  async ({ userId }, { sharedMap, error, redirect, url }) => {
+  async ({ userId }, { sharedMap, error, redirect, url, env }) => {
     const session: Session | null = sharedMap.get("session");
     if (!session || new Date(session.expires) < new Date()) {
       throw error(401, "Unauthorized");
     }
     try {
-      await followUser(session.user.id, userId);
+      await followUser(env, session.user.id, userId);
       throw redirect(301, url.pathname + url.search);
     } catch (err: any) {
       if (err.code === "P2002") {
         try {
-          await unfollowUser(session.user.id, userId);
+          await unfollowUser(env, session.user.id, userId);
           throw redirect(301, url.pathname + url.search);
         } catch (err: any) {
           if (err.message) {
@@ -40,7 +40,8 @@ export const useFollowUser = routeAction$(
 
 // eslint-disable-next-line qwik/loader-location
 export const useUpdateUserProfile = routeAction$(
-  async ({ id, ...data }, { redirect, url }) => {
+  async ({ id, ...data }, { redirect, url, env }) => {
+    const prisma = getPrisma(env);
     await prisma.user.update({
       where: {
         id,

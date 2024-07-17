@@ -1,7 +1,8 @@
 import { server$ } from "@builder.io/qwik-city";
-import { prisma } from "~/utils/prisma";
+import { getPrisma } from "~/utils/prisma";
 
 export const getThreadsLikes = server$(async (threadId: string) => {
+  const prisma = getPrisma((this as any)?.env);
   const likes = await prisma.likedThreads.findMany({
     where: {
       threadId,
@@ -22,6 +23,7 @@ export const getThreadsLikes = server$(async (threadId: string) => {
 });
 
 export const getThreadsReposts = server$(async (threadId: string) => {
+  const prisma = getPrisma((this as any)?.env);
   const reposts = await prisma.reposts.findMany({
     where: {
       threadId,
