@@ -55,6 +55,8 @@
     "@auth/prisma-adapter": "^1.5.0",
     "@fontsource-variable/open-sans": "^5.0.28",
     "@fontsource/open-sans": "^5.0.27",
+    "@libsql/client": "^0.7.0",
+    "@prisma/adapter-libsql": "^5.17.0",
     "@prisma/client": "^5.16.2",
     "@prisma/extension-accelerate": "^1.1.0",
     "date-fns": "^3.4.0",
