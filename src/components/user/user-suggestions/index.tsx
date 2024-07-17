@@ -10,7 +10,7 @@ export const UserSuggestions = component$(({ users }: UserSuggesionsProps) => {
     <div>
       <h2 class="text-lg font-semibold">Suggested for you</h2>
       <div class="mt-4">
-        <div class="carousel-center carousel gap-2 rounded-box">
+        <div class="carousel carousel-center w-full max-w-2xl gap-2 rounded-box">
           {users.map((user) => (
             <div key={user.id} class="carousel-item">
               <UserCard user={user} />
