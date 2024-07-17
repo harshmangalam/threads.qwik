@@ -1,15 +1,5 @@
 import type { User } from "@prisma/client";
 
-export enum RoleEnum {
-  USER = "USER",
-  ADMIN = "ADMIN",
-}
-export enum StatusEnum {
-  ONLINE = "ONLINE",
-  OFFLINE = "OFFLINE",
-  IDLE = "IDLE",
-}
-
 export type UserSuggestionType = User & {
   isFollowing: boolean;
   shouldFollowBack: boolean;
