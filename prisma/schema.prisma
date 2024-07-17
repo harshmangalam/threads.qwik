@@ -1,11 +1,28 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+enum RoleType {
+  USER
+  ADMIN
+}
+
+enum StatusType {
+  ONLINE
+  OFFLINE
+  IDLE
+}
+
+enum ReplyPrivacyType {
+  ANYONE
+  FOLLOWING
+  MENTION
 }
 
 model Account {
@@ -14,12 +31,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -41,10 +58,10 @@ model User {
   email         String         @unique
   emailVerified DateTime?
   image         String
-  username      String         @unique
-  status        String         @default("ONLINE")
-  bio           String         @default("")
-  role          String         @default("USER")
+  username      String         @unique @db.VarChar(39)
+  status        StatusType     @default(ONLINE)
+  bio           String         @default("") @db.VarChar(255)
+  role          RoleType       @default(USER)
   private       Boolean        @default(false)
   link          String?
   accounts      Account[]
@@ -69,20 +86,20 @@ model VerificationToken {
 }
 
 model Thread {
-  id             String         @id @default(cuid())
-  text           String?
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String           @id @default(cuid())
+  text           String?          @db.VarChar(500)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
-  replyPrivacy   String         @default("ANYONE")
-  savedByUsers   SavedThreads[] @relation(name: "savedThreads")
-  likes          LikedThreads[] @relation(name: "threadsLikes")
-  reposts        Reposts[]      @relation(name: "repostThreads")
+  replyPrivacy   ReplyPrivacyType @default(ANYONE)
+  savedByUsers   SavedThreads[]   @relation(name: "savedThreads")
+  likes          LikedThreads[]   @relation(name: "threadsLikes")
+  reposts        Reposts[]        @relation(name: "repostThreads")
   parentThreadId String?
-  parentThread   Thread?        @relation("ThreadReplies", fields: [parentThreadId], references: [id])
-  replies        Thread[]       @relation("ThreadReplies")
-  isReply        Boolean        @default(false)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  parentThread   Thread?          @relation("ThreadReplies", fields: [parentThreadId], references: [id])
+  replies        Thread[]         @relation("ThreadReplies")
+  isReply        Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Follows {

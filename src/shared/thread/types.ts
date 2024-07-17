@@ -1,10 +1,5 @@
 import type { Thread, User } from "@prisma/client";
 
-export enum ReplyPrivacyType {
-  ANYONE = "ANYONE",
-  FOLLOWING = "FOLLOWING",
-  MENTION = "MENTION",
-}
 export type ThreadType = Thread & {
   saved: boolean;
   liked: boolean;
