@@ -20,7 +20,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "postinstall": "bunx prisma generate && bunx prisma migrate deploy",
+    "postinstall": "bunx prisma generate",
     "preview": "qwik build preview && vite preview --open",
     "serve": "bun server/entry.bun.js",
     "start": "vite --open --mode ssr",
